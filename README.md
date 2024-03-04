@@ -1,4 +1,5 @@
 
+Join <a href="https://discord.gg/2PTNx3VCYa" target="_blank">Discord</a> to have your questions answered immediately!
 # ComfyUI Pets
 Play with your pet while your workflow generates!
 
