@@ -1,5 +1,6 @@
 
 # ComfyUI Pets
+Play with your pet while your workflow generates!
 
 Benefits
 - Increased mental health
