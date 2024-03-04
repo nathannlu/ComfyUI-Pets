@@ -1,5 +1,5 @@
 
-Join <a href="https://discord.gg/2PTNx3VCYa" target="_blank">Discord</a> to have your questions answered immediately!
+Still deciding whether I wanna add a game mode (like flappy bird or something) to this. Thoughts? Join my <a href="https://discord.gg/2PTNx3VCYa" target="_blank">Discord</a> and let me know!
 # ComfyUI Pets
 Play with your pet while your workflow generates!
 
