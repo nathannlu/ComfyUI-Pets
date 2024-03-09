@@ -21,6 +21,9 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
+    "globals": {
+      "LiteGraph": true
+    },
     "rules": {
     }
 }
