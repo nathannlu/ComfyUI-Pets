@@ -18,7 +18,7 @@ const ext = {
         collapsable: false,
       }),
     );
-    ComfyPets.category = "Pets";
+    ComfyPetsStage.category = "Pets";
   },
 };
 
