@@ -1,10 +1,17 @@
-import { ComfyNode } from '../comfy/comfy.js';
+import { ComfyNode, app } from '../comfy/comfy.js';
 //import { gameDialog } from '../comfy/ui.js';
 import { getRandomNumber } from '../utils.js';
+import { Button } from './core.js';
 import { Pet } from './pet.js';
 import { Food } from './food.js';
 //import { startGame } from './endless_runner/index.js';
-import { addFoodEvent } from '../apiClient.js';
+//import { addFoodEvent } from '../apiClient.js';
+
+var test = new Button("Hello world", '#eeaa00', '#001122')
+test.onClick = () => {
+  console.log("hello world")
+}
+
 
 
 /**
@@ -16,10 +23,16 @@ export class ComfyPetsStage extends ComfyNode {
     super()
 
     this.title = "Comfy Pet",
+      /*
     this.addButton("Feed pet", () => {
       this.addFood()
       addFoodEvent()
     })
+    */
+
+    this.buttons = [
+      test
+    ]
 
     /*
     // @todo
@@ -145,12 +158,76 @@ export class ComfyPetsStage extends ComfyNode {
     ctx.drawImage(this.backgroundImage, 0, 0, width, height);
   }
 
-  renderOnce() {
+  renderButtons(ctx) {
+    for (let i = 0; i < this.buttons.length; i++) {
+      const button = this.buttons[i];
+
+      ctx.fillStyle = button.fillColor;
+      ctx.fillRect(button.x, button.y, button.width, button.height);  // draw the button text
+      ctx.fillStyle = button.textColor;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '25px arial';
+      ctx.fillText(button.text, button.x + button.width / 2, button.y + this.button / 2, this.button);
+    }
+  }
+
+  /**
+   * Returns mouse pos relative to this node
+   */
+  getRelativeMousePos() {
+    const [boundingX, boundingY] = this.getBounding();
+    const [mouseX, mouseY] = app.canvas.canvas_mouse; 
+
+    const relativeMouseX = mouseX - boundingX;
+    const relativeMouseY = mouseY - boundingY;
+
+    return [relativeMouseX, relativeMouseY];
+  }
+
+  /**
+   * Checks current mouse position and returns
+   * whether it is inside the bounding box of this node
+   */
+  isMouseWithinNode() {
+    const boundingWidth = this.getBounding()[2];
+    const boundingHeight = this.getBounding()[3];
+
+    const [relativeMouseX, relativeMouseY] = this.getRelativeMousePos();
+
+    if(
+      relativeMouseX > 0 && 
+      relativeMouseX < boundingWidth &&
+      relativeMouseY > 0 &&
+      relativeMouseY < boundingHeight
+    ) {
+      return true;
+    } else {
+      return false
+    }
+  }
+
+  renderOnce(ctx) {
     this.addPet()
+    ctx.canvas.addEventListener('click', ()=>{
+
+      if(this.isMouseWithinNode()) {
+        const [mouseX, mouseY] = this.getRelativeMousePos()
+        for (let i = 0; i < this.buttons.length; i++) {
+          const button = this.buttons[i];
+          if(button.inBounds(mouseX, mouseY)) {
+            button.onClick()
+          }
+        }
+      }
+    });
+
   }
 
   render(ctx) {
+
     this.renderBackground(ctx)
+    this.renderButtons(ctx)
     this.renderFoods(ctx)
     this.renderPets(ctx) // render pet onto canvas
   }
