@@ -1,5 +1,6 @@
 import { app } from './comfy.js';
 import { ComfyPetsStage } from '../game/stage.js';
+import { ping } from '../apiClient.js';
 
 /** @typedef {import('../../../web/types/comfy.js').ComfyExtension} ComfyExtension*/
 /** @type {ComfyExtension} */
@@ -7,7 +8,9 @@ const ext = {
   name: "nathannlu.ComfyPets",
 
   // ComfyUI extension init
-  init(app) {},
+  init() {
+    ping()
+  },
 
   registerCustomNodes() {
     LiteGraph.registerNodeType(
@@ -23,3 +26,5 @@ const ext = {
 };
 
 app.registerExtension(ext);
+
+
