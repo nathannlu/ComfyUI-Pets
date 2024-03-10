@@ -3,8 +3,8 @@
  * or cloud
  */
 let cache = {}
-//export const ENDPOINT = "https://comfy-pets-cadc142b6d8e.herokuapp.com";
-export const ENDPOINT = "http://localhost:3000";
+export const ENDPOINT = "https://comfy-pets-cadc142b6d8e.herokuapp.com";
+//export const ENDPOINT = "http://localhost:3000";
 
 const EVENTS = {
   ADD_FOOD: "ADD_FOOD",
