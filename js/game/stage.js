@@ -1,9 +1,9 @@
 import { ComfyNode } from '../comfy/comfy.js';
-//import { gameDialog } from '../comfy/ui.js';
+import { gameDialog } from '../comfy/ui.js';
 import { getRandomNumber } from '../utils.js';
 import { Pet } from './pet.js';
 import { Food } from './food.js';
-//import { startGame } from './endless_runner/index.js';
+import { startGame } from './endless_runner/index.js';
 import { addFoodEvent } from '../apiClient.js';
 
 
@@ -21,14 +21,12 @@ export class ComfyPetsStage extends ComfyNode {
       addFoodEvent()
     })
 
-    /*
     // @todo
     this.addButton("Play", () => {
       const { canvas, endGame } = startGame()
       gameDialog.close = endGame;
       gameDialog.show(canvas)
     })
-    */
 
     // Stage objects
     this.pets = [];
