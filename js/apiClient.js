@@ -2,11 +2,13 @@
  * Responsible for interacting with ComfyUI backend,
  * or cloud
  */
-
 let cache = {}
+//export const ENDPOINT = "https://comfy-pets-cadc142b6d8e.herokuapp.com";
+export const ENDPOINT = "http://localhost:3000";
 
-export const ENDPOINT = "https://comfy-pets-cadc142b6d8e.herokuapp.com";
-//export const ENDPOINT = "http://localhost:3000";
+const EVENTS = {
+  ADD_FOOD: "ADD_FOOD",
+}
 
 const fetchWithCache = async (url) => {
   if(url in cache) {
@@ -30,6 +32,15 @@ export async function ping() {
   const user = await getCurrentUser();
   const userId = user?.id
   const url = `${ENDPOINT}/p?e=${userId}`
+
+  await fetch(url)
+}
+
+
+export async function addFoodEvent() {
+  const user = await getCurrentUser();
+  const userId = user?.id
+  const url = `${ENDPOINT}/e?t=${EVENTS.ADD_FOOD}&u=${userId}`
 
   await fetch(url)
 }
