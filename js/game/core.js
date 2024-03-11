@@ -25,23 +25,3 @@ export class GameObject {
   }
 }
 
-export class Button {
-  constructor(text, fillColor, textColor) {
-    this.x = 0;
-    this.y = 0;
-    this.width = 100;
-    this.height = 48;
-    this.id = generateId();
-    this.text = text;
-    this.textColor = textColor;
-    this.fillColor = fillColor;
-  }
-
-  inBounds(mouseX, mouseY) {
-    return !(mouseX < this.x || mouseX > this.x + this.width || mouseY < this.y || mouseY > this.y + this.height);
-  }
-
-  onClick() {
-    // implement
-  }
-}
