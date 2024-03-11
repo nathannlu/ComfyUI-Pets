@@ -58,6 +58,7 @@ export class Game {
     // Start loading screen
     //this.renderLoadingScreen();
     this.startGame();
+    this.renderCount = 0;
   }
 
   addButton(buttonText, options, callback) {
@@ -102,7 +103,7 @@ export class Game {
       console.log("Hello")
       //this.startGame();
     }
-    startButton.render(this.context)
+    startButton.render(this.context, this.renderCount)
 
     //this.buttons.push(startButton)
   }
@@ -183,6 +184,8 @@ export class Game {
   renderPlayer() {
     // Draw pet
     try {
+      this.blueRect.renderRun(this.context, this.renderCount, 5)
+      /*
       this.context.drawImage(
         this.blueRect.petGif.image,     // img src
         this.blueRect.x,                // x
@@ -190,6 +193,7 @@ export class Game {
         this.blueRect.width,            // width
         this.blueRect.height            // height
       );
+      */
     } catch (e) {
       // @hotfix - gif loader throws an error
     }
@@ -280,6 +284,8 @@ export class Game {
     if (!this.isPaused) {
       this.animationId = requestAnimationFrame(this.render);
     }
+
+    this.renderCount++;
   }
 }
 

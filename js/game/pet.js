@@ -1,6 +1,44 @@
 import { GIF } from '../libs/gif.js';
 import { GameObject } from './core.js';
 
+// Our sprite sheet is on a grid of 64pxs
+// Each row is 64px tall, and each frame is 64px wide
+const SPRITE_SIZE = 64
+const SPRITE_SHEET = {
+  JUMP: {
+    row: 0,
+    frames: 11,
+  },
+  IDLE1: {
+    row: 1,
+    frames: 5,
+  },
+  IDLE2: {
+    row: 2,
+    frames: 5,
+  },
+  SIT: {
+    row: 3,
+    frames: 9,
+  },
+  WALK: {
+    row: 4,
+    frames: 5,
+  },
+  RUN: {
+    row: 5,
+    frames: 8,
+  },
+  SNIFF: {
+    row: 6,
+    frames: 8,
+  },
+  SNIFF_WALK: {
+    row: 7,
+    frames: 8,
+  },
+}
+
 
 /**
  * Base pet class
@@ -25,10 +63,64 @@ export class Pet extends GameObject {
 
 
     // Assets
-    this.gifSrc = "https://raw.githubusercontent.com/tonybaloney/vscode-pets/master/media/dog/akita_walk_8fps.gif"
+    //this.gifSrc = "https://raw.githubusercontent.com/tonybaloney/vscode-pets/master/media/dog/akita_walk_8fps.gif"
+    //this.gifSrc = "./Group.png"
+    this.gifSrc = ""
+    this.petImage = new Image();
+    //this.petImage.src = "./Group.png"
+    this.petImage.src = "https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/Group%204.png"
 
     this.petGif = GIF();
     this.petGif.load(this.gifSrc)
+
+    /**
+     * Creates render sprite functions
+     * - e.g. renderWalk, renderSniff_walk, renderIdle1
+     */
+    Object.keys(SPRITE_SHEET).forEach(animName => {
+      // transform name to title case
+      // FUNC1 -> Func1
+      const titleCase = animName.charAt(0).toUpperCase() + animName.slice(1).toLowerCase();
+      const funcName = `render${titleCase}`
+      
+      const spriteFrames = SPRITE_SHEET[animName].frames
+      const spriteFramesY = SPRITE_SHEET[animName].row
+      this[funcName] = (ctx, renderCount, slowFpsBy = 10) => {
+        this.renderSprite(ctx, renderCount, spriteFrames - 1, spriteFramesY, slowFpsBy)
+      }
+    });
+
+  }
+
+  _chooseRandomDirection() {
+    const directions = [
+      "left",
+      "right",
+      "idle1",
+      "idle2",
+    ]
+
+    const changeDirections = () => {
+      const randomIndex = Math.floor(Math.random() * directions.length);
+      this.currentDirection = directions[randomIndex];
+    };
+
+    if (Date.now() - this.time > this.directionDuration) {
+      changeDirections();
+      this.time = Date.now();
+      this.directionDuration = Math.random() * 4000 + 1000;
+    }
+  }
+
+  // debug function
+  _showHitBox(ctx) {
+    ctx.fillStyle = "blue";
+    ctx.fillRect(
+      this.x,                // x
+      this.y,  
+      this.width,
+      this.height
+    )
   }
 
   setEmote() {
@@ -40,26 +132,33 @@ export class Pet extends GameObject {
     }, 1000);
   }
 
-  randomMovement() {
-    const changeDirections = () => {
-      Math.random() < 0.5 
-        ? this.currentDirection = "left"
-        : this.currentDirection = "right"
-    }
+  move(ctx, renderCount) {
+    switch(this.currentDirection) {
+      case "right":
+        this.x += 0.5;
+        this.renderWalk(ctx, renderCount)
+        break;
 
-    if (Date.now() - this.time > this.directionDuration) {
-      changeDirections();
-      this.time = Date.now();
-      this.directionDuration = Math.random() * 4000 + 1000;
-    }
-  }
+      case "left":
+        this.x -= 0.5;
+        this.renderWalk(ctx, renderCount)
+        break;
 
-  move() {
-    if(this.currentDirection == "right") {
-      this.x += 0.5;
-    }
-    if(this.currentDirection == "left") {
-      this.x -= 0.5;
+      case "sniff_walk":
+        this.renderSniff_walk(ctx, renderCount)
+        break;
+
+      case "idle1":
+        this.renderIdle1(ctx, renderCount)
+        break;
+
+      case "idle2":
+        this.renderIdle2(ctx, renderCount)
+        break;
+
+      default:
+        this.renderIdle2(ctx, renderCount)
+
     }
   }
 
@@ -103,7 +202,63 @@ export class Pet extends GameObject {
       }
 
     } else {
-      this.randomMovement()
+      this._chooseRandomDirection()
+    }
+  }
+
+
+  renderSprite(
+    ctx, 
+    renderCount,
+    spriteFrames,
+    spriteFramesY,
+    slowFpsBy = 10 // Slows down fps by n amount
+  ) {
+    const _spriteFramesY = SPRITE_SIZE * spriteFramesY
+    const spriteRenderSize = SPRITE_SIZE * 2 // This is the final size users see the sprite as
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    // There is 5 frames in the sprite sheet for walking
+    // so instead of doing this.renderCount % 4 (0 - 5 frames),
+    // we do 0 - 50 frames and scale down for a lower image fps.
+    var _frame = renderCount % (spriteFrames * slowFpsBy)
+    var frame = Math.round(_frame / slowFpsBy)
+
+    const currentRenderFrame = SPRITE_SIZE * frame
+
+    // Offset
+    const offsetX = (spriteRenderSize - this.width) / 2
+    const offsetY = (spriteRenderSize - this.height) / 2
+
+
+    if(this.currentDirection == "left") {
+      ctx.save();
+      ctx.scale(-1, 1);
+      ctx.drawImage(
+        this.petImage,     
+        currentRenderFrame,
+        _spriteFramesY,
+        SPRITE_SIZE,
+        SPRITE_SIZE,
+        -this.x - spriteRenderSize + offsetX,
+        this.y - offsetY,                
+        spriteRenderSize,
+        spriteRenderSize,
+      );
+      ctx.restore();
+    } else {
+      ctx.drawImage(
+        this.petImage,   
+        currentRenderFrame,
+        _spriteFramesY,
+        SPRITE_SIZE,
+        SPRITE_SIZE,
+        this.x - offsetX,
+        this.y - offsetY,
+        spriteRenderSize,
+        spriteRenderSize,
+      );
     }
   }
 }

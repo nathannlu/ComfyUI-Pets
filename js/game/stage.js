@@ -56,7 +56,7 @@ export class ComfyPetsStage extends ComfyNode {
   addPet() {
     const height = this.size[1];
     const petWidth = 75;
-    const petHeight = 50;
+    const petHeight = 60;
 
     const pet = new Pet({
       x: 0,
@@ -121,9 +121,6 @@ export class ComfyPetsStage extends ComfyNode {
         pet.currentDirection = "right"
       }
 
-      // move the pet
-      pet.move()
-
       // render emote
       if(pet.emote) {
         ctx.fillStyle = "blue";
@@ -131,17 +128,9 @@ export class ComfyPetsStage extends ComfyNode {
         ctx.fillText('❤️', pet.x + pet.width, pet.y);
       }
 
-      try {
-        ctx.drawImage(
-          pet.petGif.image,     // img src
-          pet.x,                // x
-          pet.y,                // y
-          pet.width,            // width
-          pet.height            // height
-        );
-      } catch (e) {
-        // @hotfix - gif loader throws an error
-      }
+      // move the pet
+      //pet._showHitBox(ctx)
+      pet.move(ctx, this.renderCount)
     }
   }
 
