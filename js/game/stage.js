@@ -5,6 +5,9 @@ import { Pet } from './pet.js';
 import { Food } from './food.js';
 import { startGame } from './endless_runner/index.js';
 import { addFoodEvent } from '../apiClient.js';
+import { MediumButton } from './buttons.js';
+
+
 
 
 /**
@@ -16,10 +19,15 @@ export class ComfyPetsStage extends ComfyNode {
     super()
 
     this.title = "Comfy Pet",
-    this.addButton("Feed pet", () => {
+    this.feedButton = this.addButton("Feed pet", {}, () => {
       this.addFood()
       addFoodEvent()
     })
+    this.feedButton.x = 8
+    this.feedButton.y = 8
+    this.feedButton.fontSize = 14;
+    this.feedButton.fontWeight = "bold";
+    this.feedButton.fontFamily = "Courier New";
 
     // @todo
     this.addButton("Play", () => {
@@ -38,7 +46,7 @@ export class ComfyPetsStage extends ComfyNode {
   }
 
   addPet() {
-    const [height] = this.size
+    const height = this.size[1];
     const petWidth = 75;
     const petHeight = 50;
 
@@ -70,8 +78,21 @@ export class ComfyPetsStage extends ComfyNode {
     this.foods.push(food)
   }
 
+  /**
+   * Add a button to the ComfyUI node
+   */
+  addButton(buttonText, options, callback) {
+    //this.addWidget("button", buttonText, "image", callback)
+    var b = new MediumButton(buttonText, '#eeaa00', '#fff')
+    b.onClick = callback 
+    this.buttons.push(b)
+
+    return b;
+  }
+
   renderPets(ctx) {
-    const [width, height] = this.size
+    const [width] = this.size
+
 
     for (let i = 0; i < this.pets.length; i++) {
       const pet = this.pets[i];
@@ -107,7 +128,7 @@ export class ComfyPetsStage extends ComfyNode {
         ctx.drawImage(
           pet.petGif.image,     // img src
           pet.x,                // x
-          height - pet.height,  // y
+          pet.y,                // y
           pet.width,            // width
           pet.height            // height
         );
@@ -118,8 +139,6 @@ export class ComfyPetsStage extends ComfyNode {
   }
 
   renderFoods(ctx) {
-    const [height] = this.size
-
     for (let i = 0; i < this.foods.length; i++) {
       const food = this.foods[i]
 
@@ -127,11 +146,10 @@ export class ComfyPetsStage extends ComfyNode {
         this.foods.splice(i, 1);
       }
 
-      //ctx.fillStyle = "blue";
       ctx.drawImage(
         food.image,
         food.x,
-        height - food.height,
+        food.y,
         food.width,
         food.height
       );
@@ -149,8 +167,12 @@ export class ComfyPetsStage extends ComfyNode {
 
   render(ctx) {
     this.renderBackground(ctx)
+    //this.renderButtons(ctx)
     this.renderFoods(ctx)
     this.renderPets(ctx) // render pet onto canvas
   }
 }
+
+
+
 

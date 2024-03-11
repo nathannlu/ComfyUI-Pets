@@ -24,3 +24,4 @@ export class GameObject {
     this.isActive = false;
   }
 }
+
