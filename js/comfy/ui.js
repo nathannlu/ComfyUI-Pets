@@ -15,24 +15,24 @@ class GameDialog extends ComfyDialog {
     this.button = $el("button", {
       type: "button",
       textContent: "Close",
-      onclick: () => this.close(),
+      onclick: () => {
+        this.element.style.display = "none";
+        this.close()
+      },
     });
     return [this.button];
   }
 
   close() {
-    this.element.style.display = "none";
   }
 
-  show(html) {
+  show(canvas) {
     this.textElement.style["white-space"] = "normal";
     this.textElement.style.color = "white";
     this.textElement.style.marginTop = "0px";
-    if (typeof html === "string") {
-      this.textElement.innerHTML = html;
-    } else {
-      this.textElement.replaceChildren(html);
-    }
+
+    this.textElement.replaceChildren(canvas);
+
     this.element.style.display = "flex";
     this.element.style.zIndex = 1001;
   }

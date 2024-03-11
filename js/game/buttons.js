@@ -12,7 +12,7 @@ export class BaseComfyPetsButton extends Button {
   render(ctx) {
 
     // Darken by 10%
-    const buttonFillDark = darkenHexColor(this.fillColor, 10);
+    const buttonFillDark = darkenHexColor(this.backgroundColor, 10);
 
     ctx.fillStyle = buttonFillDark;
     ctx.beginPath();
@@ -21,18 +21,18 @@ export class BaseComfyPetsButton extends Button {
       this.y, 
       this.width, 
       this.height,
-      8
+      4
     );  // draw the button text
     ctx.fill()
 
-    ctx.fillStyle = this.fillColor;
+    ctx.fillStyle = this.backgroundColor;
     ctx.beginPath();
     ctx.roundRect(
       this.x, 
       this.y, 
       this.width, 
       this.height - 4,
-      8
+      4
     ); 
     ctx.fill()
 

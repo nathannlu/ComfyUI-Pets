@@ -25,8 +25,10 @@ export class Pet extends GameObject {
 
 
     // Assets
+    this.gifSrc = "https://raw.githubusercontent.com/tonybaloney/vscode-pets/master/media/dog/akita_walk_8fps.gif"
+
     this.petGif = GIF();
-    this.petGif.load("https://raw.githubusercontent.com/tonybaloney/vscode-pets/master/media/dog/akita_walk_8fps.gif")
+    this.petGif.load(this.gifSrc)
   }
 
   setEmote() {

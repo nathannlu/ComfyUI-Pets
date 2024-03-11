@@ -1,13 +1,11 @@
 import { ComfyNode } from '../comfy/comfy.js';
-//import { gameDialog } from '../comfy/ui.js';
+import { gameDialog } from '../comfy/ui.js';
 import { getRandomNumber } from '../utils.js';
 import { Pet } from './pet.js';
 import { Food } from './food.js';
-//import { startGame } from './endless_runner/index.js';
-import { addFoodEvent } from '../apiClient.js';
+import { Game } from './endless_runner/index.js';
+import { addFoodEvent, startGameEvent } from '../apiClient.js';
 import { MediumButton } from './buttons.js';
-
-
 
 
 /**
@@ -29,14 +27,22 @@ export class ComfyPetsStage extends ComfyNode {
     this.feedButton.fontWeight = "bold";
     this.feedButton.fontFamily = "Courier New";
 
-    /*
-    // @todo
-    this.addButton("Play", () => {
-      const { canvas, endGame } = startGame()
-      gameDialog.close = endGame;
-      gameDialog.show(canvas)
+    // Game
+    this.gameButton = this.addButton("Play", {}, () => {
+      //const { canvas, endGame } = startGame()
+      const game = new Game()
+
+      gameDialog.close = () => game.endGame();
+      gameDialog.show(game.canvas)
+      startGameEvent()
     })
-    */
+    this.gameButton.x = 8 + this.feedButton.width + 8
+    this.gameButton.y = 8
+    this.gameButton.backgroundColor = "#0d47a1"
+    this.gameButton.fontSize = 14;
+    this.gameButton.fontWeight = "bold";
+    this.gameButton.fontFamily = "Courier New";
+
 
     // Stage objects
     this.pets = [];
@@ -120,7 +126,6 @@ export class ComfyPetsStage extends ComfyNode {
 
       // render emote
       if(pet.emote) {
-        console.log("Emote!", pet.x, pet.y, pet.height)
         ctx.fillStyle = "blue";
         ctx.font = "10px Arial";
         ctx.fillText('❤️', pet.x + pet.width, pet.y);
