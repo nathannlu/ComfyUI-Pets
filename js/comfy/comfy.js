@@ -137,7 +137,7 @@ export class ComfyNode extends LiteGraph.LGraphNode {
 }
 
 export class Button {
-  constructor(text, fillColor, textColor) {
+  constructor(text, fillColor = "#fff", textColor = "#000") {
     this.x = 0;
     this.y = 0;
     this.width = 100;
