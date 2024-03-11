@@ -4,6 +4,8 @@
 
 [![Discord chat](https://img.shields.io/discord/1140693008090661024?style=for-the-badge)](https://discord.gg/2PTNx3VCYa)
 
+<a target="_blank" href="https://discord.gg/2PTNx3VCYa">Report a bug</a>
+
 Play with your pet while your workflow generates!
 
 **Benefits**
