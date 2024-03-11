@@ -4,7 +4,7 @@ import { getRandomNumber } from '../utils.js';
 import { Pet } from './pet.js';
 import { Food } from './food.js';
 import { Game } from './endless_runner/index.js';
-import { addFoodEvent } from '../apiClient.js';
+import { addFoodEvent, startGameEvent } from '../apiClient.js';
 import { MediumButton } from './buttons.js';
 
 
@@ -34,8 +34,7 @@ export class ComfyPetsStage extends ComfyNode {
 
       gameDialog.close = () => game.endGame();
       gameDialog.show(game.canvas)
-
-      game.startGame();
+      startGameEvent()
     })
     this.gameButton.x = 8 + this.feedButton.width + 8
     this.gameButton.y = 8
@@ -127,7 +126,6 @@ export class ComfyPetsStage extends ComfyNode {
 
       // render emote
       if(pet.emote) {
-        console.log("Emote!", pet.x, pet.y, pet.height)
         ctx.fillStyle = "blue";
         ctx.font = "10px Arial";
         ctx.fillText('❤️', pet.x + pet.width, pet.y);
