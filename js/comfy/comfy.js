@@ -36,23 +36,12 @@ export class ComfyNode extends LiteGraph.LGraphNode {
   onDrawForeground(ctx) {
     if(this.renderCount == 0) {
       this.renderOnce(ctx)
+      this._render(ctx)
     }
 
     this.render(ctx)
     this.renderButtons(ctx)
 
-    // This animation loop renders frames
-    // continuously, not only when mouse moves.
-    // It is disabled because after ~4mins it 
-    // starts degrading the fps.
-    /*
-    // animation loop
-    const render = () => {
-      this.setDirtyCanvas(true, true)
-      requestAnimationFrame(render)
-    }
-    render(ctx)
-    */
     this.renderCount++;
   }
 
@@ -115,6 +104,22 @@ export class ComfyNode extends LiteGraph.LGraphNode {
     this.buttons.push(b)
 
     return b;
+  }
+  _render = () => {
+    this.setDirtyCanvas(true, true)
+    //this.render(ctx)
+    // This animation loop renders frames
+    // continuously, not only when mouse moves.
+    // It is disabled because after ~4mins it 
+    // starts degrading the fps.
+    /*
+    // animation loop
+    const render = () => {
+      this.setDirtyCanvas(true, true)
+    }
+    render(ctx)
+    */
+    requestAnimationFrame(this._render)
   }
 
   /**
