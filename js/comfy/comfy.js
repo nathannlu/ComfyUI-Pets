@@ -144,7 +144,7 @@ export class Button {
     this.height = 48;
     this.text = text;
     this.color = textColor;
-    this.fillColor = fillColor;
+    this.backgroundColor = fillColor;
 
     this.fontSize = "16";
     this.fontFamily = "Arial";
@@ -163,7 +163,7 @@ export class Button {
    * Default button styles
    */
   render(ctx) {
-    ctx.fillStyle = this.fillColor;
+    ctx.fillStyle = this.backgroundColor;
     ctx.beginPath();
     ctx.roundRect(
       this.x, 
