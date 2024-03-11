@@ -18,67 +18,120 @@ class Obstacle extends GameObject {
   // Additional methods or properties specific to the player can be added here
 }
 
-export function startGame() {
-  var canvas = document.createElement('canvas');
-  canvas.id = 'myCanvas';
-  canvas.width = 700;
-  canvas.height = 400;
+export class Game {
+  constructor() {
+    // canvas 
+    this.canvas = document.createElement('canvas');
+    this.canvas.id = 'comfy-pets-runner-game';
+    this.canvas.width = 700;
+    this.canvas.height = 400;
+    this.context = this.canvas.getContext('2d');
 
-  var context = canvas.getContext('2d');
+    // game states
+    // default dont start the game
+    this.isPaused = true;
+    this.animatonId = null
+    this.eventListeners = {};
 
-  // Variables for red rectangles
-  var redRectangles = [];
+    // player
+    this.blueRect = new Pet({
+      x: 50,
+      y: 300,
+      width: 75,
+      height: 50,
+    });
+    this.blueRect.direction = "right"
+    this.blueRect.isJumping = false
 
-  let keyDownTime;
-  let keyHoldDuration;
-
-  var animationId;
-  var isPaused = false;
-
-  // Blue rectangle variables
-  var blueRect = new Pet({
-    x: 50,
-    y: 300,
-    width: 75,
-    height: 50,
-  });
-
-  blueRect.direction = "right"
-  blueRect.isJumping = false
+    // enemies
+    this.redRectangles = []
+  }
 
 
-  // Function to create a new rectangle
-  function createRectangle() {
+  startGame() {
+    const handleKeyDown = (event) => {
+      if (event.key === ' ') {
+        this.blueRect.isJumping = true;
+        this.keyDownTime = new Date();
+      }
+    }
+
+    const handleKeyUp = (event) => {
+      if (event.key === ' ') {
+        this.blueRect.isJumping = false;
+        this.keyHoldDuration = new Date() - this.keyDownTime;
+
+        // Reset the keyDownTime for the next key press
+        this.keyDownTime = null;
+      }
+    }
+
+    this.isPaused = false;
+    this.eventListeners = {
+      'keydown': handleKeyDown,
+      'keyup': handleKeyUp
+    }
+
+    for (const [type, listener] of Object.entries(this.eventListeners)) {
+      document.addEventListener(type, listener);
+    }
+
+    this.render();
+  }
+
+  togglePause() {
+    this.isPaused = !this.isPaused;
+    if (this.isPaused) {
+      cancelAnimationFrame(this.animationId);
+    } else {
+      this.render(); // Resume the animation
+    }
+  }
+
+  endGame() {
+    // Cancel animation frame
+    cancelAnimationFrame(this.animationId);
+
+    // Remove event listeners
+    for (const [type, listener] of Object.entries(this.eventListeners)) {
+      document.removeEventListener(type, listener);
+    }
+
+    alert('Game Over!'); // Display a message or perform any other end-of-game actions
+  }
+
+
+  createRectangle() {
     return new Obstacle({
-        x: canvas.width,  // Start from the right side of the canvas
-        y: 300,            // Initial y-coordinate
-        width: 100,
-        height: 100,
-        //space: getRandomSpace()  // Varying space between rectangles
+      x: this.canvas.width,  // Start from the right side of the canvas
+      y: 300,            // Initial y-coordinate
+      width: 100,
+      height: 100,
     });
   }
 
-  function draw() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
+
+  render = () => {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Draw and update red rectangles
-    for (var i = 0; i < redRectangles.length; i++) {
-      var redRect = redRectangles[i];
-      context.fillStyle = '#FF0000';
-      context.fillRect(redRect.x, redRect.y, redRect.width, redRect.height);
+    for (var i = 0; i < this.redRectangles.length; i++) {
+      var redRect = this.redRectangles[i];
+      this.context.fillStyle = '#FF0000';
+      this.context.fillRect(redRect.x, redRect.y, redRect.width, redRect.height);
 
       redRect.x -= 2; // Adjust the speed of movement
 
       // Remove red rectangles that are out of the scene
       if (redRect.x < -20) {
-        redRectangles.splice(i, 1);
+        this.redRectangles.splice(i, 1);
         i--; // Adjust the index after removing an element
       }
     }
 
     // Generate a new rectangle periodically
     if (Math.random() < 0.02) {  // Adjust the probability as needed
-      redRectangles.push(createRectangle());
+      this.redRectangles.push(this.createRectangle());
     }
 
 
@@ -87,99 +140,38 @@ export function startGame() {
     //context.fillRect(blueRect.x, blueRect.y, blueRect.width, blueRect.height);
 
     try {
-      context.drawImage(
-        blueRect.petGif.image,     // img src
-        blueRect.x,                // x
-        blueRect.y,                // y
-        blueRect.width,            // width
-        blueRect.height            // height
+      this.context.drawImage(
+        this.blueRect.petGif.image,     // img src
+        this.blueRect.x,                // x
+        this.blueRect.y,                // y
+        this.blueRect.width,            // width
+        this.blueRect.height            // height
       );
     } catch (e) {
       // @hotfix - gif loader throws an error
       console.log(e)
     }
 
-    keyHoldDuration = new Date() - keyDownTime;
+    this.keyHoldDuration = new Date() - this.keyDownTime;
     // Check if the blue rectangle is jumping
-    if (blueRect.isJumping) {
-        blueRect.y -= 5; // Move up //-= Math.sin(1/10 * keyHoldDuration)// 
-    } else if (blueRect.y < 300) {
-        blueRect.y += 5; // Move down until it reaches the initial position
+    if (this.blueRect.isJumping) {
+        this.blueRect.y -= 5; // Move up //-= Math.sin(1/10 * keyHoldDuration)// 
+    } else if (this.blueRect.y < 300) {
+        this.blueRect.y += 5; // Move down until it reaches the initial position
     }
 
-    if (redRectangles.length > 0 && blueRect.isTouching(redRectangles[0])) {
+    if (this.redRectangles.length > 0 && this.blueRect.isTouching(this.redRectangles[0])) {
       console.log("you lost")
-      togglePause();
+      this.togglePause();
     }
-
 
     // Request the next animation frame
-    if (!isPaused) {
-      animationId = requestAnimationFrame(draw);
+    if (!this.isPaused) {
+      this.animationId = requestAnimationFrame(this.render);
     }
   }
-
-
-
-  function handleKeyDown(event) {
-    if (event.key === ' ') {
-      blueRect.isJumping = true;
-      keyDownTime = new Date();
-    } else if (event.key === 'p' || event.key === 'P') {
-      togglePause();
-    } else if (event.key === 'e' || event.key === 'E') {
-      endGame();
-    }
-  }
-
-  function handleKeyUp(event) {
-    if (event.key === ' ') {
-      blueRect.isJumping = false;
-      keyHoldDuration = new Date() - keyDownTime;
-      console.log(`Key held for ${keyHoldDuration / 1000} seconds`);
-      console.log(`Sin ${Math.sin(keyHoldDuration)} seconds`);
-
-      // Reset the keyDownTime for the next key press
-      keyDownTime = null;
-    }
-  }
-
-  // Handle spacebar press for blue rectangle jump
-  document.addEventListener('keydown', handleKeyDown);
-
-  // Handle spacebar release for blue rectangle jump
-  document.addEventListener('keyup', handleKeyUp);
-
-  function togglePause() {
-    isPaused = !isPaused;
-    if (isPaused) {
-      cancelAnimationFrame(animationId);
-    } else {
-      draw(); // Resume the animation
-    }
-  }
-
-  // Start the animation
-  draw();
-
-  function endGame() {
-    // Cancel animation frame
-    cancelAnimationFrame(animationId);
-
-    // Remove event listeners
-    document.removeEventListener('keydown', handleKeyDown);
-    document.removeEventListener('keyup', handleKeyUp);
-
-    // Remove canvas from the document
-    //document.body.removeChild(canvas);
-
-    // Additional cleanup if needed
-
-    alert('Game Over!'); // Display a message or perform any other end-of-game actions
-  }
-
-  return { canvas, endGame };
 }
+
 
 
 
