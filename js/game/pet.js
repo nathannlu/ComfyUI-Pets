@@ -1,4 +1,4 @@
-import { GIF } from "../libs/gif.js";
+//import { GIF } from "../libs/gif.js";
 import { GameObject } from "./core.js";
 
 // Our sprite sheet is on a grid of 64pxs
@@ -69,8 +69,8 @@ export class Pet extends GameObject {
     this.petImage.src =
       "https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/Group%204.png";
 
-    this.petGif = GIF();
-    this.petGif.load(this.gifSrc);
+    //this.petGif = GIF();
+    //this.petGif.load(this.gifSrc);
 
     /**
      * Creates render sprite functions
