@@ -127,6 +127,11 @@ export class ComfyPetsStage extends ComfyNode {
         ctx.fillText("❤️", pet.x + pet.width, pet.y);
       }
 
+      // render emote
+      if (pet.talk) {
+        pet.renderTextBubble(ctx)
+      }
+
       // move the pet
       //pet._showHitBox(ctx)
       pet.move(ctx, this.renderCount);
