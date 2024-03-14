@@ -53,6 +53,7 @@ export class Pet extends GameObject {
 
     this.emote = false;
     this.talk = false;
+    this.talkText = "";
 
     // Properties here tell when the
     // pet to change directions. Right now
@@ -138,17 +139,18 @@ export class Pet extends GameObject {
     }, 1000);
   }
 
-  setTalk() {
+  setTalk(text, duration = 1000) {
     // set an emote for t seconds
     this.talk = true;
+    this.talkText = text;
 
     setTimeout(() => {
       this.talk = false;
-    }, 1000);
+    }, duration);
   }
 
   onClick() {
-    this.setTalk();
+    this.setTalk("Woof!");
   }
 
   move(ctx, renderCount) {
@@ -278,7 +280,6 @@ export class Pet extends GameObject {
   }
 
   renderTextBubble(ctx) {
-    var text = 'woof!';
     ctx.fillStyle = 'black';
     ctx.font = '14px Courier New';
     ctx.textAlign = 'center';
@@ -304,7 +305,7 @@ export class Pet extends GameObject {
       const textX = this.x - textBubbleWidth/2
       const textY = textBubbleY + textBubbleHeight / 2;
 
-      ctx.fillText(text, textX, textY);
+      ctx.fillText(this.talkText, textX, textY);
 
     } else {
       // this includes idle, and everything
@@ -323,7 +324,7 @@ export class Pet extends GameObject {
       const textX = textBubbleX + textBubbleWidth / 2;
       const textY = textBubbleY + textBubbleHeight / 2;
 
-      ctx.fillText(text, textX, textY);
+      ctx.fillText(this.talkText, textX, textY);
     }
   }
 
