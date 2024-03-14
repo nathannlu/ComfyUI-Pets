@@ -219,18 +219,12 @@ export class Game {
     }
 
     // Generate a new rectangle periodically if its cooldown is over
-    // if (this.redRectangleCooldown <= 0) {
     if (this.redRectangleCooldown <= 0) {
       this.redRectangles.push(this.createRectangle());
       this.redRectangleCooldown = (50 - this.score * 0.5) * (1 + Math.random());
     } else {
       this.redRectangleCooldown--;
     }
-
-    // if (Math.random() < 0.02) {
-    //   // Adjust the probability as needed
-    //   this.redRectangles.push(this.createRectangle());
-    // }
   }
 
   renderOneFrame = () => {
