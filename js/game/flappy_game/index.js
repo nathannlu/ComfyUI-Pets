@@ -11,6 +11,8 @@ class Obstacle extends GameObject {
   constructor({ x, y, width, height }) {
     super(x, y, width, height);
 
+    this.scoreCollected = false;
+
     this.image = new Image();
     this.image.src =
       "https://upload.wikimedia.org/wikipedia/commons/9/93/Mario_pipe.png";
@@ -247,13 +249,18 @@ export class FlappyGame {
       }
 
       // Rectangle speeds
-      redRect.x -= this.baseRedRectangleSpeed + this.score * 0.1;
+      redRect.x -= this.baseRedRectangleSpeed;
 
       // Remove red rectangles that are out of the scene
       if (redRect.x < -20) {
         this.redRectangles.splice(i, 1);
         i--;
-        this.score++;
+      }
+
+      // Update score
+      if (redRect.x < 70 && redRect.scoreCollected == false) {
+        this.score += 0.5;
+        redRect.scoreCollected = true;
       }
     }
 
@@ -261,7 +268,7 @@ export class FlappyGame {
     if (this.redRectangleCooldown <= 0) {
       const rectangles = this.createRectangle();
       this.redRectangles.push(...rectangles);
-      this.redRectangleCooldown = (50 - this.score * 0.5) * (1 + Math.random());
+      this.redRectangleCooldown = 75;
     } else {
       this.redRectangleCooldown--;
     }
