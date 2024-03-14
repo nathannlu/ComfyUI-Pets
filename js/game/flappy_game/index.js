@@ -41,8 +41,8 @@ export class FlappyGame {
     this.score = 0;
 
     // Physics values
-    this.gravity = 0.6;
-    this.initialJumpVelocity = -10; // Initial jump velocity value
+    this.gravity = 0.8;
+    this.initialJumpVelocity = -11; // Initial jump velocity value
     this.floor = 375;
 
     // player
@@ -59,7 +59,7 @@ export class FlappyGame {
     // enemies
     this.redRectangles = [];
     this.redRectangleCooldown = 0;
-    this.baseRedRectangleSpeed = 5;
+    this.baseRedRectangleSpeed = 3;
 
     this.buttons = [];
 
@@ -163,9 +163,9 @@ export class FlappyGame {
   }
 
   createRectangle() {
-    const gapHeight = 100;
+    const gapHeight = 85;
     const obstacleWidth = 75;
-    const bufferHeight = 50; // Buffer height for obstacle at the top
+    const bufferHeight = 20; // Buffer height for obstacle at the top
 
     const minGapPosition = bufferHeight + gapHeight; // Ensure a buffer at the top
     const maxGapPosition = this.canvas.height - gapHeight - gapHeight; // Maximum gap position
