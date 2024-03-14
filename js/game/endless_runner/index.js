@@ -40,8 +40,8 @@ export class Game {
     this.eventListeners = {};
 
     // Physics values
-    this.gravity = 0.2;
-    this.initialJumpVelocity = -7; // Initial jump velocity value
+    this.gravity = 0.3;
+    this.initialJumpVelocity = -8; // Initial jump velocity value
 
     // player
     this.blueRect = new Pet({
@@ -56,6 +56,7 @@ export class Game {
 
     // enemies
     this.redRectangles = [];
+    this.redRectangleCooldown = 0;
 
     this.buttons = [];
 
@@ -204,7 +205,7 @@ export class Game {
       }
 
       // Rectangle speeds
-      redRect.x -= 2;
+      redRect.x -= 5;
 
       // Remove red rectangles that are out of the scene
       if (redRect.x < -20) {
@@ -213,11 +214,19 @@ export class Game {
       }
     }
 
-    // Generate a new rectangle periodically
-    if (Math.random() < 0.02) {
-      // Adjust the probability as needed
+    // Generate a new rectangle periodically if its cooldown is over
+    // if (this.redRectangleCooldown <= 0) {
+    if (this.redRectangleCooldown <= 0) {
       this.redRectangles.push(this.createRectangle());
+      this.redRectangleCooldown = 40 * (1 + Math.random());
+    } else {
+      this.redRectangleCooldown--;
     }
+
+    // if (Math.random() < 0.02) {
+    //   // Adjust the probability as needed
+    //   this.redRectangles.push(this.createRectangle());
+    // }
   }
 
   renderOneFrame = () => {
