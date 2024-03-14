@@ -39,6 +39,10 @@ export class Game {
     this.animatonId = null;
     this.eventListeners = {};
 
+    // Physics values
+    this.gravity = 0.2;
+    this.initialJumpVelocity = -7; // Initial jump velocity value
+
     // player
     this.blueRect = new Pet({
       x: 50,
@@ -48,7 +52,7 @@ export class Game {
     });
     this.blueRect.direction = "right";
     this.blueRect.isJumping = false;
-    this.blueRect.velocityY = 0;
+    this.blueRect.velocityY = this.initialJumpVelocity;
 
     // enemies
     this.redRectangles = [];
@@ -59,10 +63,6 @@ export class Game {
     //this.renderLoadingScreen();
     this.startGame();
     this.renderCount = 0;
-
-    // Physics values
-    this.gravity = 0.2;
-    this.jumpVelocity = -6; // Initial jump velocity value
   }
 
   addButton(buttonText, options, callback) {
@@ -115,20 +115,13 @@ export class Game {
 
   startGame() {
     const handleKeyDown = (event) => {
-      if (event.key === " ") {
+      if (event.key === " " && this.blueRect.isJumping == false) {
+        this.blueRect.velocityY = this.initialJumpVelocity;
         this.blueRect.isJumping = true;
-        // this.keyDownTime = new Date();
       }
     };
 
-    const handleKeyUp = (event) => {
-      if (event.key === " ") {
-        // this.blueRect.isJumping = false;
-        // this.keyHoldDuration = new Date() - this.keyDownTime;
-        // Reset the keyDownTime for the next key press
-        // this.keyDownTime = null;
-      }
-    };
+    const handleKeyUp = (event) => {};
 
     this.isPaused = false;
     this.eventListeners = {
@@ -235,7 +228,6 @@ export class Game {
     this.renderObstacles();
     this.renderPlayer();
 
-    // this.keyHoldDuration = new Date() - this.keyDownTime;
     // Handle jump
     if (this.blueRect.isJumping) {
       this.blueRect.velocityY += this.gravity;
@@ -243,18 +235,14 @@ export class Game {
 
       // check ground collision
       if (this.blueRect.y >= 300) {
+        this.keyDownTime = null;
+        this.keyHoldDuration = null;
+
         this.blueRect.y = 300;
-        this.blueRect.velocityY = this.jumpVelocity;
+        this.blueRect.velocityY = this.initialJumpVelocity;
         this.blueRect.isJumping = false;
       }
     }
-
-    // this.keyHoldDuration = new Date() - this.keyDownTime;
-    // if (this.blueRect.isJumping) {
-    //   this.blueRect.y -= 5; // Move up //-= Math.sin(1/10 * keyHoldDuration)//
-    // } else if (this.blueRect.y < 300) {
-    //   this.blueRect.y += 5; // Move down until it reaches the initial position
-    // }
   };
 
   renderBackground() {
