@@ -38,6 +38,7 @@ export class Game {
     this.isPaused = true;
     this.animatonId = null;
     this.eventListeners = {};
+    this.score = 0;
 
     // Physics values
     this.gravity = 0.3;
@@ -112,6 +113,7 @@ export class Game {
     this.context.fillStyle = "white";
     this.context.font = `bold 32px Courier New`;
     this.context.fillText("You lost", 50, 50);
+    this.context.fillText("Score: " + this.score, 50, 100);
   }
 
   startGame() {
@@ -211,6 +213,7 @@ export class Game {
       if (redRect.x < -20) {
         this.redRectangles.splice(i, 1);
         i--;
+        this.score++;
       }
     }
 
@@ -281,6 +284,7 @@ export class Game {
       this.context.fillStyle = "white";
       this.context.font = `bold 24px Courier New`;
       this.context.fillText("Press space to jump", 0, 50);
+      this.context.fillText("Score: " + this.score, 0, 100);
     }
 
     // Request the next animation frame
