@@ -25,8 +25,8 @@ export class ComfyPetsStage extends ComfyNode {
     this.feedButton.fontWeight = "bold";
     this.feedButton.fontFamily = "Courier New";
 
-    // Game
-    this.gameButton = this.addButton("Play", {}, () => {
+    // Hop Dog
+    this.gameButtonHopDog = this.addButton("Play Hop Dog", {}, () => {
       //const { canvas, endGame } = startGame()
       const game = new Game();
 
@@ -34,12 +34,13 @@ export class ComfyPetsStage extends ComfyNode {
       gameDialog.show(game.canvas);
       startGameEvent();
     });
-    this.gameButton.x = 8 + this.feedButton.width + 8;
-    this.gameButton.y = 8;
-    this.gameButton.backgroundColor = "#0d47a1";
-    this.gameButton.fontSize = 14;
-    this.gameButton.fontWeight = "bold";
-    this.gameButton.fontFamily = "Courier New";
+    this.gameButtonHopDog.x = 8 + this.feedButton.width + 8;
+    this.gameButtonHopDog.y = 8;
+    this.gameButtonHopDog.backgroundColor = "#0d47a1";
+    this.gameButtonHopDog.fontSize = 14;
+    this.gameButtonHopDog.fontWeight = "bold";
+    this.gameButtonHopDog.fontFamily = "Courier New";
+    this.gameButtonHopDog.width = 130;
 
     // Stage objects
     this.pets = [];
