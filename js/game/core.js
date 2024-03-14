@@ -1,4 +1,4 @@
-import { generateId } from '../utils.js';
+import { generateId } from "../utils.js";
 
 export class GameObject {
   constructor(x, y, width, height) {
@@ -9,6 +9,8 @@ export class GameObject {
     this.id = generateId();
     this.isActive = true;
   }
+
+  onClick() {}
 
   // Check if this object is touching another object
   isTouching(otherObject) {
@@ -24,4 +26,3 @@ export class GameObject {
     this.isActive = false;
   }
 }
-
