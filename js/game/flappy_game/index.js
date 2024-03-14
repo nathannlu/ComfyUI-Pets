@@ -24,7 +24,7 @@ export class FlappyGame {
     // canvas
     this.canvas = document.createElement("canvas");
     this.canvas.id = "comfy-pets-runner-game";
-    this.canvas.width = 700;
+    this.canvas.width = 400;
     this.canvas.height = 400;
     this.context = this.canvas.getContext("2d");
 
@@ -41,12 +41,12 @@ export class FlappyGame {
     this.score = 0;
 
     // Physics values
-    this.gravity = 0.3;
-    this.initialJumpVelocity = -8; // Initial jump velocity value
+    this.gravity = 0.6;
+    this.initialJumpVelocity = -10; // Initial jump velocity value
 
     // player
     this.blueRect = new Pet({
-      x: 50,
+      x: 75,
       y: 300,
       width: 75,
       height: 50,
@@ -119,7 +119,7 @@ export class FlappyGame {
 
   startGame() {
     const handleKeyDown = (event) => {
-      if (event.key === " " && this.blueRect.isJumping == false) {
+      if (event.key === " ") {
         this.blueRect.velocityY = this.initialJumpVelocity;
         this.blueRect.isJumping = true;
       }
@@ -190,6 +190,7 @@ export class FlappyGame {
 
   renderObstacles() {
     // Draw and update red rectangles
+
     for (var i = 0; i < this.redRectangles.length; i++) {
       var redRect = this.redRectangles[i];
       //this.context.fillStyle = '#FF0000';
@@ -236,7 +237,10 @@ export class FlappyGame {
     this.renderPlayer();
 
     // Handle jump
-    if (this.blueRect.isJumping) {
+    if (this.blueRect.y <= 0) {
+      this.blueRect.velocityY = -this.blueRect.velocityY;
+      this.blueRect.y = 5;
+    } else if (this.blueRect.isJumping) {
       this.blueRect.velocityY += this.gravity;
       this.blueRect.y += this.blueRect.velocityY;
 
@@ -278,7 +282,7 @@ export class FlappyGame {
     } else {
       this.context.fillStyle = "white";
       this.context.font = `bold 24px Courier New`;
-      this.context.fillText("Press space to jump", 0, 50);
+      this.context.fillText("Press space to fly", 0, 50);
       this.context.fillText("Score: " + this.score, 0, 100);
     }
 
