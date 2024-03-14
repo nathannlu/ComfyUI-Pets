@@ -50,8 +50,7 @@ export class ComfyPetsStage extends ComfyNode {
 
     // Assets
     this.backgroundImage = new Image();
-    this.backgroundImage.src =
-      "https://media.istockphoto.com/id/1333010525/vector/simple-flat-pixel-art-illustration-of-cartoon-outdoor-landscape-background-pixel-arcade.jpg?s=612x612&w=0&k=20&c=uTGqB9fhmjzaNd17EGRHYU04_70K7a3M8ilRoJjDwtY=";
+    this.backgroundImage.src = "https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/Summer2.png"
   }
 
   addPet() {
