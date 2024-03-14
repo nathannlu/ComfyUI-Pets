@@ -58,6 +58,7 @@ export class Game {
     // enemies
     this.redRectangles = [];
     this.redRectangleCooldown = 0;
+    this.baseRedRectangleSpeed = 5;
 
     this.buttons = [];
 
@@ -207,7 +208,7 @@ export class Game {
       }
 
       // Rectangle speeds
-      redRect.x -= 5;
+      redRect.x -= this.baseRedRectangleSpeed + this.score * 0.1;
 
       // Remove red rectangles that are out of the scene
       if (redRect.x < -20) {
@@ -221,7 +222,7 @@ export class Game {
     // if (this.redRectangleCooldown <= 0) {
     if (this.redRectangleCooldown <= 0) {
       this.redRectangles.push(this.createRectangle());
-      this.redRectangleCooldown = 40 * (1 + Math.random());
+      this.redRectangleCooldown = (50 - this.score * 0.5) * (1 + Math.random());
     } else {
       this.redRectangleCooldown--;
     }
