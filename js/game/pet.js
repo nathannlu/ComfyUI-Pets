@@ -46,7 +46,7 @@ export class Pet extends GameObject {
   constructor({ x, y, height, width }) {
     super(x, y, height, width);
     // Pet state
-    this.x = 0;
+    this.x = x;
     this.height = height;
     this.width = width;
     this.currentDirection = "right";
