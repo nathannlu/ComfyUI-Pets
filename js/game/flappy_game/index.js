@@ -19,7 +19,7 @@ class Obstacle extends GameObject {
   // Additional methods or properties specific to the player can be added here
 }
 
-export class EndlessRunnerGame {
+export class FlappyGame {
   constructor() {
     // canvas
     this.canvas = document.createElement("canvas");

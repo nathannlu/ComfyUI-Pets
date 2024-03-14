@@ -3,9 +3,10 @@ import { gameDialog } from "../comfy/ui.js";
 import { getRandomNumber } from "../utils.js";
 import { Pet } from "./pet.js";
 import { Food } from "./food.js";
-import { Game } from "./endless_runner/index.js";
+import { EndlessRunnerGame } from "./endless_runner/index.js";
 import { addFoodEvent, startGameEvent } from "../apiClient.js";
 import { MediumButton } from "./buttons.js";
+import { FlappyGame } from "./flappy_game/index.js";
 
 /**
  * Describes the main game environment
@@ -25,22 +26,39 @@ export class ComfyPetsStage extends ComfyNode {
     this.feedButton.fontWeight = "bold";
     this.feedButton.fontFamily = "Courier New";
 
-    // Hop Dog
-    this.gameButtonHopDog = this.addButton("Play Hop Dog", {}, () => {
+    // Endless Runner Game
+    this.gameButtonEndlessRunner = this.addButton("Play Hop Dog", {}, () => {
       //const { canvas, endGame } = startGame()
-      const game = new Game();
+      const game = new EndlessRunnerGame();
 
       gameDialog.close = () => game.endGame();
       gameDialog.show(game.canvas);
       startGameEvent();
     });
-    this.gameButtonHopDog.x = 8 + this.feedButton.width + 8;
-    this.gameButtonHopDog.y = 8;
-    this.gameButtonHopDog.backgroundColor = "#0d47a1";
-    this.gameButtonHopDog.fontSize = 14;
-    this.gameButtonHopDog.fontWeight = "bold";
-    this.gameButtonHopDog.fontFamily = "Courier New";
-    this.gameButtonHopDog.width = 130;
+    this.gameButtonEndlessRunner.x = 8 + this.feedButton.width + 8;
+    this.gameButtonEndlessRunner.y = 8;
+    this.gameButtonEndlessRunner.backgroundColor = "#0d47a1";
+    this.gameButtonEndlessRunner.fontSize = 14;
+    this.gameButtonEndlessRunner.fontWeight = "bold";
+    this.gameButtonEndlessRunner.fontFamily = "Courier New";
+    this.gameButtonEndlessRunner.width = 150;
+
+    // Flappy Game
+    this.gameButtonFlappyGame = this.addButton("Play Flappy Dog", {}, () => {
+      //const { canvas, endGame } = startGame()
+      const game = new FlappyGame();
+
+      gameDialog.close = () => game.endGame();
+      gameDialog.show(game.canvas);
+      startGameEvent();
+    });
+    this.gameButtonFlappyGame.x = 8 + this.feedButton.width + 8;
+    this.gameButtonFlappyGame.y = 8 + this.gameButtonFlappyGame.height + 8;
+    this.gameButtonFlappyGame.backgroundColor = "#0d47a1";
+    this.gameButtonFlappyGame.fontSize = 14;
+    this.gameButtonFlappyGame.fontWeight = "bold";
+    this.gameButtonFlappyGame.fontFamily = "Courier New";
+    this.gameButtonFlappyGame.width = 150;
 
     // Stage objects
     this.pets = [];
