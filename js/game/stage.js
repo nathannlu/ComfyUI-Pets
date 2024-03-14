@@ -41,6 +41,8 @@ export class ComfyPetsStage extends ComfyNode {
     this.gameButton.fontWeight = "bold";
     this.gameButton.fontFamily = "Courier New";
 
+    this.size = [400,200]
+
     // Stage objects
     this.pets = [];
     this.foods = [];
