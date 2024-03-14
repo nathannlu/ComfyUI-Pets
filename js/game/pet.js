@@ -1,9 +1,9 @@
-import { GIF } from "../libs/gif.js";
+//import { GIF } from "../libs/gif.js";
 import { GameObject } from "./core.js";
 
 // Our sprite sheet is on a grid of 64pxs
 // Each row is 64px tall, and each frame is 64px wide
-const SPRITE_SIZE = 64;
+const SPRITE_SIZE = 128;
 const SPRITE_SHEET = {
   JUMP: {
     row: 0,
@@ -61,16 +61,9 @@ export class Pet extends GameObject {
     this.directionDuration = 0;
 
     // Assets
-    //this.gifSrc = "https://raw.githubusercontent.com/tonybaloney/vscode-pets/master/media/dog/akita_walk_8fps.gif"
-    //this.gifSrc = "./Group.png"
-    this.gifSrc = "";
+    //this.gifSrc = "";
     this.petImage = new Image();
-    //this.petImage.src = "./Group.png"
-    this.petImage.src =
-      "https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/Group%204.png";
-
-    this.petGif = GIF();
-    this.petGif.load(this.gifSrc);
+    this.petImage.src = "https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/corgi-sprite-128x128.png"
 
     /**
      * Creates render sprite functions
@@ -216,7 +209,7 @@ export class Pet extends GameObject {
     slowFpsBy = 10 // Slows down fps by n amount
   ) {
     const _spriteFramesY = SPRITE_SIZE * spriteFramesY;
-    const spriteRenderSize = SPRITE_SIZE * 2; // This is the final size users see the sprite as
+    const spriteRenderSize = SPRITE_SIZE; // This is the final size users see the sprite as
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
