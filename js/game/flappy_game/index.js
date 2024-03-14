@@ -13,7 +13,7 @@ class Obstacle extends GameObject {
 
     this.image = new Image();
     this.image.src =
-      "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/bed37cc7-6f06-4834-99f3-65e681a17e36/deyijro-4c901a78-91d7-4d70-8660-ac5ad6f6ba02.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2JlZDM3Y2M3LTZmMDYtNDgzNC05OWYzLTY1ZTY4MWExN2UzNlwvZGV5aWpyby00YzkwMWE3OC05MWQ3LTRkNzAtODY2MC1hYzVhZDZmNmJhMDIucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.TcAzWFbLGW-nlsoMq2OJ9IzZxQVqhTPgNAk2qGeEdNc";
+      "https://upload.wikimedia.org/wikipedia/commons/9/93/Mario_pipe.png";
   }
 
   // Additional methods or properties specific to the player can be added here
@@ -25,7 +25,7 @@ export class FlappyGame {
     this.canvas = document.createElement("canvas");
     this.canvas.id = "comfy-pets-runner-game";
     this.canvas.width = 400;
-    this.canvas.height = 400;
+    this.canvas.height = 500;
     this.context = this.canvas.getContext("2d");
 
     // assets
@@ -43,11 +43,12 @@ export class FlappyGame {
     // Physics values
     this.gravity = 0.6;
     this.initialJumpVelocity = -10; // Initial jump velocity value
+    this.floor = 375;
 
     // player
     this.blueRect = new Pet({
       x: 75,
-      y: 300,
+      y: this.floor,
       width: 75,
       height: 50,
     });
@@ -162,12 +163,32 @@ export class FlappyGame {
   }
 
   createRectangle() {
-    return new Obstacle({
+    const gapHeight = 100;
+    const obstacleWidth = 75;
+    const bufferHeight = 50; // Buffer height for obstacle at the top
+
+    const minGapPosition = bufferHeight + gapHeight; // Ensure a buffer at the top
+    const maxGapPosition = this.canvas.height - gapHeight - gapHeight; // Maximum gap position
+
+    const gapPosition =
+      Math.floor(Math.random() * (maxGapPosition - minGapPosition + 1)) +
+      minGapPosition;
+
+    const topRect = new Obstacle({
+      width: obstacleWidth,
+      height: gapPosition - gapHeight, // Height of the top obstacle
       x: this.canvas.width, // Start from the right side of the canvas
-      y: 300, // Initial y-coordinate
-      width: 75,
-      height: 50,
+      y: 0, // Initial y-coordinate for the top obstacle
     });
+    topRect.flipped = true;
+
+    const bottomRect = new Obstacle({
+      width: obstacleWidth,
+      height: this.floor - gapPosition, // Height of the bottom obstacle
+      x: this.canvas.width, // Start from the right side of the canvas
+      y: gapPosition + gapHeight, // Initial y-coordinate for the bottom obstacle
+    });
+    return [topRect, bottomRect]; // Return both obstacles as an array
   }
 
   renderPlayer() {
@@ -197,13 +218,30 @@ export class FlappyGame {
       //this.context.fillRect(redRect.x, redRect.y, redRect.width, redRect.height);
 
       try {
-        this.context.drawImage(
-          redRect.image, // img src
-          redRect.x, // x
-          redRect.y, // y
-          redRect.width, // width
-          redRect.height // height
-        );
+        if (redRect.flipped) {
+          this.context.save();
+          this.context.translate(
+            redRect.x + redRect.width / 2,
+            redRect.y + redRect.height / 2
+          );
+          this.context.scale(1, -1); // Scale vertically by -1 (flip vertically)
+          this.context.drawImage(
+            redRect.image,
+            -redRect.width / 2,
+            -redRect.height / 2,
+            redRect.width,
+            redRect.height
+          ); // Draw the flipped obstacle
+          this.context.restore(); // Restore the saved state of the context
+        } else {
+          this.context.drawImage(
+            redRect.image, // img src
+            redRect.x, // x
+            redRect.y, // y
+            redRect.width, // width
+            redRect.height // height
+          );
+        }
       } catch (e) {
         // @hotfix - gif loader throws an error
       }
@@ -221,7 +259,8 @@ export class FlappyGame {
 
     // Generate a new rectangle periodically if its cooldown is over
     if (this.redRectangleCooldown <= 0) {
-      this.redRectangles.push(this.createRectangle());
+      const rectangles = this.createRectangle();
+      this.redRectangles.push(...rectangles);
       this.redRectangleCooldown = (50 - this.score * 0.5) * (1 + Math.random());
     } else {
       this.redRectangleCooldown--;
@@ -245,11 +284,11 @@ export class FlappyGame {
       this.blueRect.y += this.blueRect.velocityY;
 
       // check ground collision
-      if (this.blueRect.y >= 300) {
+      if (this.blueRect.y >= this.floor) {
         this.keyDownTime = null;
         this.keyHoldDuration = null;
 
-        this.blueRect.y = 300;
+        this.blueRect.y = this.floor;
         this.blueRect.velocityY = this.initialJumpVelocity;
         this.blueRect.isJumping = false;
       }
@@ -273,10 +312,11 @@ export class FlappyGame {
   render = () => {
     this.renderOneFrame();
 
-    if (
-      this.redRectangles.length > 0 &&
-      this.blueRect.isTouching(this.redRectangles[0])
-    ) {
+    const defeated = this.redRectangles.some((redRect) =>
+      this.blueRect.isTouching(redRect)
+    );
+
+    if (this.redRectangles.length > 0 && defeated) {
       this.togglePause();
       this.renderDefeatScreen();
     } else {
