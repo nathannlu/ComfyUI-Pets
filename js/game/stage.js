@@ -3,9 +3,10 @@ import { gameDialog } from "../comfy/ui.js";
 import { getRandomNumber } from "../utils.js";
 import { Pet } from "./pet.js";
 import { Food } from "./food.js";
-import { Game } from "./endless_runner/index.js";
+import { EndlessRunnerGame } from "./endless_runner/index.js";
 import { addFoodEvent, startGameEvent } from "../apiClient.js";
 import { MediumButton } from "./buttons.js";
+import { FlappyGame } from "./flappy_game/index.js";
 
 /**
  * Describes the main game environment
@@ -25,21 +26,39 @@ export class ComfyPetsStage extends ComfyNode {
     this.feedButton.fontWeight = "bold";
     this.feedButton.fontFamily = "Courier New";
 
-    // Game
-    this.gameButton = this.addButton("Play", {}, () => {
+    // Endless Runner Game
+    this.gameButtonEndlessRunner = this.addButton("Play Hop Dog", {}, () => {
       //const { canvas, endGame } = startGame()
-      const game = new Game();
+      const game = new EndlessRunnerGame();
 
       gameDialog.close = () => game.endGame();
       gameDialog.show(game.canvas);
       startGameEvent();
     });
-    this.gameButton.x = 8 + this.feedButton.width + 8;
-    this.gameButton.y = 8;
-    this.gameButton.backgroundColor = "#0d47a1";
-    this.gameButton.fontSize = 14;
-    this.gameButton.fontWeight = "bold";
-    this.gameButton.fontFamily = "Courier New";
+    this.gameButtonEndlessRunner.x = 8 + this.feedButton.width + 8;
+    this.gameButtonEndlessRunner.y = 8;
+    this.gameButtonEndlessRunner.backgroundColor = "#0d47a1";
+    this.gameButtonEndlessRunner.fontSize = 14;
+    this.gameButtonEndlessRunner.fontWeight = "bold";
+    this.gameButtonEndlessRunner.fontFamily = "Courier New";
+    this.gameButtonEndlessRunner.width = 150;
+
+    // Flappy Game
+    this.gameButtonFlappyGame = this.addButton("Play Flappy Dog", {}, () => {
+      //const { canvas, endGame } = startGame()
+      const game = new FlappyGame();
+
+      gameDialog.close = () => game.endGame();
+      gameDialog.show(game.canvas);
+      startGameEvent();
+    });
+    this.gameButtonFlappyGame.x = 8 + this.feedButton.width + 8;
+    this.gameButtonFlappyGame.y = 8 + this.gameButtonFlappyGame.height + 8;
+    this.gameButtonFlappyGame.backgroundColor = "#0d47a1";
+    this.gameButtonFlappyGame.fontSize = 14;
+    this.gameButtonFlappyGame.fontWeight = "bold";
+    this.gameButtonFlappyGame.fontFamily = "Courier New";
+    this.gameButtonFlappyGame.width = 150;
 
     this.size = [400,200]
 
