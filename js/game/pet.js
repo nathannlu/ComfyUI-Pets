@@ -52,6 +52,8 @@ export class Pet extends GameObject {
     this.currentDirection = "right";
 
     this.emote = false;
+    this.talk = false;
+    this.talkText = "";
 
     // Properties here tell when the
     // pet to change directions. Right now
@@ -61,9 +63,11 @@ export class Pet extends GameObject {
     this.directionDuration = 0;
 
     // Assets
-    //this.gifSrc = "";
     this.petImage = new Image();
     this.petImage.src = "https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/corgi-sprite-128x128.png"
+
+    this.textBubble = new Image();
+    this.textBubble.src = "https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/text-bubble.png"
 
     /**
      * Creates render sprite functions
@@ -116,6 +120,16 @@ export class Pet extends GameObject {
     );
   }
 
+  renderOnTop(ctx) {
+    ctx.fillStyle = "blue";
+    ctx.fillRect(
+      this.x, // x
+      this.y - this.height,
+      this.width,
+      this.height
+    );
+  }
+
   setEmote() {
     // set an emote for t seconds
     this.emote = true;
@@ -125,8 +139,18 @@ export class Pet extends GameObject {
     }, 1000);
   }
 
+  setTalk(text, duration = 1000) {
+    // set an emote for t seconds
+    this.talk = true;
+    this.talkText = text;
+
+    setTimeout(() => {
+      this.talk = false;
+    }, duration);
+  }
+
   onClick() {
-    this.setEmote();
+    this.setTalk("Woof!");
   }
 
   move(ctx, renderCount) {
@@ -254,4 +278,54 @@ export class Pet extends GameObject {
       );
     }
   }
+
+  renderTextBubble(ctx) {
+    ctx.fillStyle = 'black';
+    ctx.font = '14px Courier New';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    const textBubbleWidth = 70;
+    const textBubbleHeight = 40 
+    if (this.currentDirection == "left") {
+      const textBubbleX = -this.x - this.width + textBubbleWidth
+      const textBubbleY = this.y - textBubbleHeight
+      ctx.save();
+      ctx.scale(-1, 1);
+      ctx.drawImage(
+        this.textBubble,
+        textBubbleX,
+        textBubbleY,
+        textBubbleWidth,
+        textBubbleHeight
+      )
+      ctx.restore();
+
+      // Calculate text position
+      const textX = this.x - textBubbleWidth/2
+      const textY = textBubbleY + textBubbleHeight / 2;
+
+      ctx.fillText(this.talkText, textX, textY);
+
+    } else {
+      // this includes idle, and everything
+      // else at the moment
+      const textBubbleX = this.x + this.width
+      const textBubbleY = this.y - textBubbleHeight
+
+      ctx.drawImage(
+        this.textBubble,
+        textBubbleX,
+        textBubbleY,
+        textBubbleWidth,
+        textBubbleHeight
+      )
+
+      const textX = textBubbleX + textBubbleWidth / 2;
+      const textY = textBubbleY + textBubbleHeight / 2;
+
+      ctx.fillText(this.talkText, textX, textY);
+    }
+  }
+
 }
