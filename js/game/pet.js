@@ -54,6 +54,7 @@ export class Pet extends GameObject {
     this.emote = false;
     this.talk = false;
     this.talkText = "";
+    this.hungerPoints = 10;
 
     // Properties here tell when the
     // pet to change directions. Right now
