@@ -64,10 +64,12 @@ export class Pet extends GameObject {
 
     // Assets
     this.petImage = new Image();
-    this.petImage.src = "https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/corgi-sprite-128x128.png"
+    this.petImage.src =
+      "https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/corgi-sprite-128x128.png";
 
     this.textBubble = new Image();
-    this.textBubble.src = "https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/text-bubble.png"
+    this.textBubble.src =
+      "https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/text-bubble.png";
 
     /**
      * Creates render sprite functions
@@ -280,16 +282,16 @@ export class Pet extends GameObject {
   }
 
   renderTextBubble(ctx) {
-    ctx.fillStyle = 'black';
-    ctx.font = '14px Courier New';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    ctx.fillStyle = "black";
+    ctx.font = "14px Courier New";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
     const textBubbleWidth = 70;
-    const textBubbleHeight = 40 
+    const textBubbleHeight = 40;
     if (this.currentDirection == "left") {
-      const textBubbleX = -this.x - this.width + textBubbleWidth
-      const textBubbleY = this.y - textBubbleHeight
+      const textBubbleX = -this.x - this.width + textBubbleWidth;
+      const textBubbleY = this.y - textBubbleHeight;
       ctx.save();
       ctx.scale(-1, 1);
       ctx.drawImage(
@@ -298,20 +300,19 @@ export class Pet extends GameObject {
         textBubbleY,
         textBubbleWidth,
         textBubbleHeight
-      )
+      );
       ctx.restore();
 
       // Calculate text position
-      const textX = this.x - textBubbleWidth/2
+      const textX = this.x - textBubbleWidth / 2;
       const textY = textBubbleY + textBubbleHeight / 2;
 
       ctx.fillText(this.talkText, textX, textY);
-
     } else {
       // this includes idle, and everything
       // else at the moment
-      const textBubbleX = this.x + this.width
-      const textBubbleY = this.y - textBubbleHeight
+      const textBubbleX = this.x + this.width;
+      const textBubbleY = this.y - textBubbleHeight;
 
       ctx.drawImage(
         this.textBubble,
@@ -319,7 +320,7 @@ export class Pet extends GameObject {
         textBubbleY,
         textBubbleWidth,
         textBubbleHeight
-      )
+      );
 
       const textX = textBubbleX + textBubbleWidth / 2;
       const textY = textBubbleY + textBubbleHeight / 2;
@@ -327,5 +328,4 @@ export class Pet extends GameObject {
       ctx.fillText(this.talkText, textX, textY);
     }
   }
-
 }

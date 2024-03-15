@@ -60,7 +60,7 @@ export class ComfyPetsStage extends ComfyNode {
     this.gameButtonFlappyGame.fontFamily = "Courier New";
     this.gameButtonFlappyGame.width = 150;
 
-    this.size = [400,200]
+    this.size = [400, 200];
 
     // Stage objects
     this.pets = [];
@@ -69,7 +69,8 @@ export class ComfyPetsStage extends ComfyNode {
 
     // Assets
     this.backgroundImage = new Image();
-    this.backgroundImage.src = "https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/Summer2.png"
+    this.backgroundImage.src =
+      "https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/Summer2.png";
   }
 
   addPet() {
@@ -148,7 +149,7 @@ export class ComfyPetsStage extends ComfyNode {
 
       // render emote
       if (pet.talk) {
-        pet.renderTextBubble(ctx)
+        pet.renderTextBubble(ctx);
       }
 
       // move the pet
