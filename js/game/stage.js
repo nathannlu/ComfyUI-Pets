@@ -143,6 +143,9 @@ export class ComfyPetsStage extends ComfyNode {
     maxPoints,
     label,
     colour,
+    fontSize = 14,
+    fontFamily = "Courier New",
+    fontWeight = "bold",
     id = null,
     initialPoints = maxPoints
   ) {
@@ -152,8 +155,11 @@ export class ComfyPetsStage extends ComfyNode {
       width,
       height,
       maxPoints,
-      label,
       colour,
+      label,
+      fontSize,
+      fontFamily,
+      fontWeight,
       id,
       initialPoints
     );
