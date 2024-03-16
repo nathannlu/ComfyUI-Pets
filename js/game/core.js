@@ -1,13 +1,13 @@
-import { generateId } from "../utils.js";
+import { generateId } from '../utils.js'
 
 export class GameObject {
   constructor(x, y, width, height) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.id = generateId();
-    this.isActive = true;
+    this.x = x
+    this.y = y
+    this.width = width
+    this.height = height
+    this.id = generateId()
+    this.isActive = true
   }
 
   onClick() {}
@@ -19,10 +19,10 @@ export class GameObject {
       this.x + this.width > otherObject.x &&
       this.y < otherObject.y + otherObject.height &&
       this.y + this.height > otherObject.y
-    );
+    )
   }
 
   delete() {
-    this.isActive = false;
+    this.isActive = false
   }
 }
