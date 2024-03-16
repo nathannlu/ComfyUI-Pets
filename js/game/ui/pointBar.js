@@ -26,8 +26,6 @@ export class PointBar extends GameObject {
     this.fontWeight = fontWeight;
     // id of gameObject to be associated with i.e. the pet
     this.id = id;
-    // spacing for each point
-    this.lineSpacing = this.height / this.maxPoints;
   }
 
   addPoints(points) {
@@ -54,7 +52,7 @@ export class PointBar extends GameObject {
   }
 
   render(ctx) {
-    console.log("rendering point bar" + this.id);
+    // Fill background box
     const padding = 15;
     ctx.fillStyle = darkenHexColor(this.colour, 50);
     ctx.beginPath();
@@ -67,12 +65,15 @@ export class PointBar extends GameObject {
     );
     ctx.fill();
 
+    // fill each line per point
+    const lineSpacing = this.height / this.maxPoints;
     ctx.fillStyle = this.colour;
     for (let i = 0; i < this.currentPoints; i++) {
-      const lineY = this.y + this.height - i * this.lineSpacing;
-      ctx.fillRect(this.x, lineY, this.width, this.lineSpacing * 0.75);
+      const lineY = this.y + this.height - i * lineSpacing;
+      ctx.fillRect(this.x, lineY, this.width, lineSpacing * 0.75);
     }
 
+    // fill label
     ctx.font = `${this.fontWeight} ${this.fontSize}px ${this.fontFamily} `;
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
@@ -80,7 +81,7 @@ export class PointBar extends GameObject {
     ctx.fillText(
       this.label,
       this.x + this.width / 2,
-      this.y + this.height + this.lineSpacing * 0.75 + 12
+      this.y + this.height + lineSpacing * 0.75 + 12
     );
   }
 }
