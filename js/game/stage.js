@@ -77,15 +77,15 @@ export class ComfyPetsStage extends ComfyNode {
     this.gameObjectArrays.push(this.guiElements);
 
     // First dog's hunger points
-    this.hungerPointsBar = this.addPointBar(
-      this.feedButton.x + this.feedButton.width / 4,
-      this.feedButton.y + this.feedButton.height + this.gutter,
-      50,
-      75,
-      10,
-      "Hunger",
-      "#aa00ee"
-    );
+    this.hungerPointsBar = this.addPointBar({
+      x: this.feedButton.x + this.feedButton.width / 4,
+      y: this.feedButton.y + this.feedButton.height + this.gutter,
+      width: 50,
+      height: 75,
+      maxPoints: 10,
+      label: "Hunger",
+      colour: "#aa00ee",
+    });
     this.guiElements.push(this.hungerPointsBar);
 
     // Assets
@@ -139,7 +139,7 @@ export class ComfyPetsStage extends ComfyNode {
     return b;
   }
 
-  addPointBar(
+  addPointBar({
     x,
     y,
     width,
@@ -151,22 +151,22 @@ export class ComfyPetsStage extends ComfyNode {
     fontFamily = "Courier New",
     fontWeight = "bold",
     id = null,
-    initialPoints = maxPoints
-  ) {
-    var pb = new PointBar(
-      x,
-      y,
-      width,
-      height,
-      maxPoints,
-      colour,
-      label,
-      fontSize,
-      fontFamily,
-      fontWeight,
-      id,
-      initialPoints
-    );
+    initialPoints = maxPoints,
+  }) {
+    const pb = new PointBar({
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      maxPoints: maxPoints,
+      colour: colour,
+      label: label,
+      fontSize: fontSize,
+      fontFamily: fontFamily,
+      fontWeight: fontWeight,
+      id: id,
+      initialPoints: initialPoints,
+    });
     this.guiElements.push(pb);
 
     return pb;

@@ -2,7 +2,7 @@ import { GameObject } from "../core.js";
 import { darkenHexColor } from "../../utils.js";
 
 export class PointBar extends GameObject {
-  constructor(
+  constructor({
     x,
     y,
     width,
@@ -14,8 +14,8 @@ export class PointBar extends GameObject {
     fontFamily = "Courier New",
     fontWeight = "bold",
     id = null,
-    initialPoints = maxPoints
-  ) {
+    initialPoints = maxPoints,
+  }) {
     super(x, y, width, height);
     this.maxPoints = maxPoints;
     this.currentPoints = initialPoints;
@@ -54,6 +54,7 @@ export class PointBar extends GameObject {
   }
 
   render(ctx) {
+    console.log("rendering point bar" + this.id);
     const padding = 15;
     ctx.fillStyle = darkenHexColor(this.colour, 50);
     ctx.beginPath();
