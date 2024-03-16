@@ -1,3 +1,5 @@
+import { GameObject } from "../core.js";
+
 export class PointBar extends GameObject {
   constructor(
     x,
@@ -18,7 +20,7 @@ export class PointBar extends GameObject {
     // id of gameObject to be associated with i.e. the pet
     this.id = id;
     // spacing for each point
-    this.lineSpacing = this.width / this.maxPoints;
+    this.lineSpacing = this.height / this.maxPoints;
   }
 
   addPoints(points) {
@@ -44,13 +46,11 @@ export class PointBar extends GameObject {
     }
   }
 
-  draw(ctx) {
+  render(ctx) {
     ctx.fillStyle = this.colour;
-
-    // Draw lines representing each point
     for (let i = 0; i < this.currentPoints; i++) {
-      const lineX = this.x + i * this.lineSpacing;
-      ctx.fillRect(lineX, this.y, 1, this.height);
+      const lineY = this.y + i * this.lineSpacing;
+      ctx.fillRect(this.x, lineY, this.width, this.lineSpacing * 0.75);
     }
   }
 }
