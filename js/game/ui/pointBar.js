@@ -1,4 +1,5 @@
 import { GameObject } from "../core.js";
+import { darkenHexColor } from "../../utils.js";
 
 export class PointBar extends GameObject {
   constructor(
@@ -53,6 +54,18 @@ export class PointBar extends GameObject {
   }
 
   render(ctx) {
+    const padding = 15;
+    ctx.fillStyle = darkenHexColor(this.colour, 50);
+    ctx.beginPath();
+    ctx.roundRect(
+      this.x - padding,
+      this.y,
+      this.width + 2 * padding,
+      this.height + 2 * padding,
+      4
+    );
+    ctx.fill();
+
     ctx.fillStyle = this.colour;
     for (let i = 0; i < this.currentPoints; i++) {
       const lineY = this.y + this.height - i * this.lineSpacing;
@@ -60,7 +73,7 @@ export class PointBar extends GameObject {
     }
 
     ctx.font = `${this.fontWeight} ${this.fontSize}px ${this.fontFamily} `;
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "white";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(

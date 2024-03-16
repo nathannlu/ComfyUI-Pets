@@ -16,13 +16,15 @@ export class ComfyPetsStage extends ComfyNode {
   constructor() {
     super();
 
+    this.gutter = 8;
+
     (this.title = "Comfy Pet"),
       (this.feedButton = this.addButton("Feed pet", {}, () => {
         this.addFood();
         addFoodEvent();
       }));
-    this.feedButton.x = 8;
-    this.feedButton.y = 8;
+    this.feedButton.x = this.gutter;
+    this.feedButton.y = this.gutter;
     this.feedButton.fontSize = 14;
     this.feedButton.fontWeight = "bold";
     this.feedButton.fontFamily = "Courier New";
@@ -36,8 +38,8 @@ export class ComfyPetsStage extends ComfyNode {
       gameDialog.show(game.canvas);
       startGameEvent();
     });
-    this.gameButtonEndlessRunner.x = 8 + this.feedButton.width + 8;
-    this.gameButtonEndlessRunner.y = 8;
+    this.gameButtonEndlessRunner.x = this.gutter + this.feedButton.width + 8;
+    this.gameButtonEndlessRunner.y = this.gutter;
     this.gameButtonEndlessRunner.backgroundColor = "#0d47a1";
     this.gameButtonEndlessRunner.fontSize = 14;
     this.gameButtonEndlessRunner.fontWeight = "bold";
@@ -53,8 +55,10 @@ export class ComfyPetsStage extends ComfyNode {
       gameDialog.show(game.canvas);
       startGameEvent();
     });
-    this.gameButtonFlappyGame.x = 8 + this.feedButton.width + 8;
-    this.gameButtonFlappyGame.y = 8 + this.gameButtonFlappyGame.height + 8;
+    this.gameButtonFlappyGame.x =
+      this.gutter + this.feedButton.width + this.gutter;
+    this.gameButtonFlappyGame.y =
+      this.gutter + this.gameButtonFlappyGame.height + this.gutter;
     this.gameButtonFlappyGame.backgroundColor = "#0d47a1";
     this.gameButtonFlappyGame.fontSize = 14;
     this.gameButtonFlappyGame.fontWeight = "bold";
@@ -74,13 +78,13 @@ export class ComfyPetsStage extends ComfyNode {
 
     // First dog's hunger points
     this.hungerPointsBar = this.addPointBar(
-      50,
-      50,
+      this.feedButton.x + this.feedButton.width / 4,
+      this.feedButton.y + this.feedButton.height + this.gutter,
       50,
       75,
       10,
       "Hunger",
-      "red"
+      "#aa00ee"
     );
     this.guiElements.push(this.hungerPointsBar);
 
