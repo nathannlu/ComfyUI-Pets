@@ -1,6 +1,7 @@
 import { api, app } from './comfy.js'
 import { ComfyPetsStage } from '../game/stage.js'
 import { ping, getCurrentUser, setUserNewBalance } from '../apiClient.js'
+import { events, EARN_COINS } from '../events.js';
 
 /** @typedef {import('../../../web/types/comfy.js').ComfyExtension} ComfyExtension*/
 /** @type {ComfyExtension} */
@@ -44,6 +45,8 @@ const ext = {
 
           // Add balance to pet
           await setUserNewBalance(user.balance + 10)
+          const e = new Event(EARN_COINS);
+          events.dispatchEvent(e)
         } catch (e) {
           console.error(e)
         }
