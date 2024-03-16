@@ -1,20 +1,35 @@
-# ComfyUI Pets
 
 <img style="width:100%;" src="https://github.com/nathannlu/ComfyUI-Pets/assets/24965772/6a008f67-be08-479b-b0ad-a8342c3a852b" />
+<p align="center">
+  <a href="#comfyui-pets-installation">Installation</a>  - <a href="https://discord.gg/2PTNx3VCYa">Support</a> - <a href="https://discord.gg/2PTNx3VCYa">Bug reports</a> 
+</p>
 
-[![Discord chat](https://img.shields.io/discord/1140693008090661024?style=for-the-badge)](https://discord.gg/2PTNx3VCYa)
-
-<a target="_blank" href="https://discord.gg/2PTNx3VCYa">Report a bug</a>
-
+# ComfyUI Pets
 Play with your pet while your workflow generates!
 
 **Benefits**
-
 - Increased mental health
 - Guaranteed 500% boost in productivity
-- More cuteness in your life
+- Improves your image generation speed by 0.0001 it/s
 
-https://github.com/nathannlu/ComfyUI-Pets/assets/24965772/bf708b2b-9903-4918-a931-ba0bc052ae13
+
+<br />
+
+## 🪙 Earn coins when you generate images
+With each image you generate, you'll also earn valuable coins! Spend coins in shop to feed and improve your pet
+
+<img style="width:100%;" src="https://github.com/nathannlu/ComfyUI-Pets/assets/24965772/a9e78aee-50bf-461f-af14-8f336e54228d" />
+
+
+## ❤️ Give your pet head pats and food
+Nourish and nurture! Not only can you shower your furry friend with affectionate head pats, but you can also treat them to delicious food to keep them happy and healthy. 
+
+<img style="width:100%;" src="https://github.com/nathannlu/ComfyUI-Pets/assets/24965772/189a7a22-434c-455f-8823-dd1b36e6535c" />
+
+## 👾 Play games with your pet
+Engage in thrilling games with your beloved companion. Challenge your pet to beat high scores, conquer obstacles, and embark on thrilling adventures together. 
+
+<img style="width:100%;" src="https://github.com/nathannlu/ComfyUI-Pets/assets/24965772/af878ba6-71c1-4aff-a192-73522f0f9041" />
 
 ## ComfyUI Pets Installation
 
