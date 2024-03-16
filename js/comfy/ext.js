@@ -39,7 +39,7 @@ const ext = {
         //const elapsedTime = evt.timeStamp
         try {
           // Add balance to pet
-          const e = new CustomEvent(EARN_COINS, { detail: { coins: 10 }});
+          const e = new CustomEvent(EARN_COINS, { detail: { coins: 10 } })
           events.dispatchEvent(e)
         } catch (e) {
           console.error(e)

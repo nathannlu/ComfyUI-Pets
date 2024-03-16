@@ -6,7 +6,7 @@
 import { GameObject } from '../core.js'
 import { Pet } from '../pet.js'
 import { MediumButton } from '../buttons.js'
-import { events, EARN_COINS } from '../../events.js';
+import { events, EARN_COINS } from '../../events.js'
 
 class Obstacle extends GameObject {
   constructor({ x, y, width, height }) {
@@ -120,7 +120,7 @@ export class EndlessRunnerGame {
     this.context.fillStyle = '#FFBF00'
     this.context.fillText(`+${this.score} coins`, 50, 150)
 
-    const e = new CustomEvent(EARN_COINS, { detail: { coins: this.score }});
+    const e = new CustomEvent(EARN_COINS, { detail: { coins: this.score } })
     events.dispatchEvent(e)
   }
 

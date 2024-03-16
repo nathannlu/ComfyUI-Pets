@@ -4,7 +4,12 @@ import { getRandomNumber } from '../utils.js'
 import { Pet } from './pet.js'
 import { Food } from './food.js'
 import { EndlessRunnerGame } from './endless_runner/index.js'
-import { addFoodEvent, startGameEvent, getCurrentUser, setUserNewBalance } from '../apiClient.js'
+import {
+  addFoodEvent,
+  startGameEvent,
+  getCurrentUser,
+  setUserNewBalance,
+} from '../apiClient.js'
 import { MediumButton } from './buttons.js'
 import { FlappyGame } from './flappy_game/index.js'
 import { events, EARN_COINS } from '../events.js'
