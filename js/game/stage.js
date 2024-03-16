@@ -4,10 +4,10 @@ import { getRandomNumber } from '../utils.js'
 import { Pet } from './pet.js'
 import { Food } from './food.js'
 import { EndlessRunnerGame } from './endless_runner/index.js'
-import { addFoodEvent, startGameEvent, getCurrentUser } from '../apiClient.js'
+import { addFoodEvent, startGameEvent, getCurrentUser, setUserNewBalance } from '../apiClient.js'
 import { MediumButton } from './buttons.js'
 import { FlappyGame } from './flappy_game/index.js'
-import { events, EARN_COINS } from '../events.js';
+import { events, EARN_COINS } from '../events.js'
 
 /**
  * Describes the main game environment
@@ -28,13 +28,16 @@ export class ComfyPetsStage extends ComfyNode {
 
     // event emitter
     this.events = events
-    this.events.addEventListener(EARN_COINS, () => {
-      this.setTextDisplay("+10 coins")
+    this.events.addEventListener(EARN_COINS, async (event) => {
+      const coins = event.detail.coins
+      this.setTextDisplay(`+${coins} coins`)
 
       // @hotfix - changes aren't propagating
       // to db in time.
       //await this.rerenderUser()
-      this.user.balance += 10;
+      this.user.balance += parseInt(coins)
+
+      await setUserNewBalance(this.user.balance)
     })
     this.textDisplay = null
 
@@ -90,7 +93,7 @@ export class ComfyPetsStage extends ComfyNode {
   }
 
   async initializeUser() {
-    this.user = await getCurrentUser();
+    this.user = await getCurrentUser()
   }
   async rerenderUser() {
     await this.initializeUser()
@@ -150,21 +153,19 @@ export class ComfyPetsStage extends ComfyNode {
     }, 1000)
   }
 
-
-
   renderUserCoins(ctx) {
-    if(this.user) {
+    if (this.user) {
       const [width] = this.size
 
       const text = `${this.user.balance} coins`
-      const fontSize = 16;
-      const fontFamily = 'Arial';
-      ctx.font = `800 ${fontSize}px ${fontFamily}`;
+      const fontSize = 16
+      const fontFamily = 'Arial'
+      ctx.font = `800 ${fontSize}px ${fontFamily}`
 
-      ctx.fillStyle = '#FFBF00';
-      ctx.textAlign = 'right';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(text, width - 16, 16);
+      ctx.fillStyle = '#FFBF00'
+      ctx.textAlign = 'right'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(text, width - 16, 16)
 
       // Stroke the text with white color outside
       /*
@@ -178,26 +179,26 @@ export class ComfyPetsStage extends ComfyNode {
   }
 
   renderTextCenter(ctx) {
-    if(this.textDisplay) {
+    if (this.textDisplay) {
       const [width, height] = this.size
 
       // Calculate the position to render the text in the center
-      const x = width / 2;
-      const y = height / 2;
+      const x = width / 2
+      const y = height / 2
 
       // Set font properties
-      const fontSize = 20;
-      const fontFamily = 'Arial';
-      ctx.font = `bold ${fontSize}px ${fontFamily}`;
+      const fontSize = 20
+      const fontFamily = 'Arial'
+      ctx.font = `bold ${fontSize}px ${fontFamily}`
 
       // Text to render
       const text = this.textDisplay
 
       // Draw the text in the center
-      ctx.fillStyle = '#FFBF00';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(text, x, y);
+      ctx.fillStyle = '#FFBF00'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(text, x, y)
     }
   }
 

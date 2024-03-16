@@ -6,6 +6,7 @@
 import { GameObject } from '../core.js'
 import { Pet } from '../pet.js'
 import { MediumButton } from '../buttons.js'
+import { events, EARN_COINS } from '../../events.js';
 
 class Obstacle extends GameObject {
   constructor({ x, y, width, height }) {
@@ -118,6 +119,12 @@ export class FlappyGame {
     this.context.font = `bold 32px Courier New`
     this.context.fillText('You lost', 50, 50)
     this.context.fillText('Score: ' + this.score, 50, 100)
+
+    this.context.fillStyle = '#FFBF00'
+    this.context.fillText(`+${this.score} coins`, 50, 150)
+
+    const e = new CustomEvent(EARN_COINS, { detail: { coins: this.score }});
+    events.dispatchEvent(e)
   }
 
   startGame() {
