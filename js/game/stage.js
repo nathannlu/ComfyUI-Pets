@@ -4,9 +4,15 @@ import { getRandomNumber } from '../utils.js'
 import { Pet } from './pet.js'
 import { Food } from './food.js'
 import { EndlessRunnerGame } from './endless_runner/index.js'
-import { addFoodEvent, startGameEvent } from '../apiClient.js'
+import {
+  addFoodEvent,
+  startGameEvent,
+  getCurrentUser,
+  setUserNewBalance,
+} from '../apiClient.js'
 import { MediumButton } from './buttons.js'
 import { FlappyGame } from './flappy_game/index.js'
+import { events, EARN_COINS } from '../events.js'
 
 /**
  * Describes the main game environment
@@ -24,6 +30,25 @@ export class ComfyPetsStage extends ComfyNode {
     this.feedButton.fontSize = 14
     this.feedButton.fontWeight = 'bold'
     this.feedButton.fontFamily = 'Courier New'
+
+    // event emitter
+    this.events = events
+    this.events.addEventListener(EARN_COINS, async (event) => {
+      const coins = event.detail.coins
+      this.setTextDisplay(`+${coins} coins`)
+
+      // @hotfix - changes aren't propagating
+      // to db in time.
+      //await this.rerenderUser()
+      this.user.balance += parseInt(coins)
+
+      await setUserNewBalance(this.user.balance)
+    })
+    this.textDisplay = null
+
+    // Initialize User
+    this.user = null
+    this.initializeUser()
 
     // Endless Runner Game
     this.gameButtonEndlessRunner = this.addButton('Play Hop Dog', {}, () => {
@@ -72,6 +97,13 @@ export class ComfyPetsStage extends ComfyNode {
       'https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/Summer2.png'
   }
 
+  async initializeUser() {
+    this.user = await getCurrentUser()
+  }
+  async rerenderUser() {
+    await this.initializeUser()
+  }
+
   addPet() {
     const height = this.size[1]
     const petWidth = 75
@@ -115,6 +147,64 @@ export class ComfyPetsStage extends ComfyNode {
     this.buttons.push(b)
 
     return b
+  }
+
+  setTextDisplay(text) {
+    // set an emote for t seconds
+    this.textDisplay = text
+
+    setTimeout(() => {
+      this.textDisplay = null
+    }, 1000)
+  }
+
+  renderUserCoins(ctx) {
+    if (this.user) {
+      const [width] = this.size
+
+      const text = `${this.user.balance} coins`
+      const fontSize = 16
+      const fontFamily = 'Arial'
+      ctx.font = `800 ${fontSize}px ${fontFamily}`
+
+      ctx.fillStyle = '#FFBF00'
+      ctx.textAlign = 'right'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(text, width - 16, 16)
+
+      // Stroke the text with white color outside
+      /*
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = .5; // Adjust the thickness of the outline
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      ctx.strokeText(text, width - 16, 16);
+      */
+    }
+  }
+
+  renderTextCenter(ctx) {
+    if (this.textDisplay) {
+      const [width, height] = this.size
+
+      // Calculate the position to render the text in the center
+      const x = width / 2
+      const y = height / 2
+
+      // Set font properties
+      const fontSize = 20
+      const fontFamily = 'Arial'
+      ctx.font = `bold ${fontSize}px ${fontFamily}`
+
+      // Text to render
+      const text = this.textDisplay
+
+      // Draw the text in the center
+      ctx.fillStyle = '#FFBF00'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(text, x, y)
+    }
   }
 
   renderPets(ctx) {
@@ -180,6 +270,8 @@ export class ComfyPetsStage extends ComfyNode {
 
   render(ctx) {
     this.renderBackground(ctx)
+    this.renderUserCoins(ctx)
+    this.renderTextCenter(ctx)
     //this.renderButtons(ctx)
     this.renderFoods(ctx)
     this.renderPets(ctx) // render pet onto canvas

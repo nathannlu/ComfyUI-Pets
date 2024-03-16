@@ -1,6 +1,7 @@
 import { api, app } from './comfy.js'
 import { ComfyPetsStage } from '../game/stage.js'
-import { ping, getCurrentUser, setUserNewBalance } from '../apiClient.js'
+import { ping } from '../apiClient.js'
+import { events, EARN_COINS } from '../events.js'
 
 /** @typedef {import('../../../web/types/comfy.js').ComfyExtension} ComfyExtension*/
 /** @type {ComfyExtension} */
@@ -37,13 +38,9 @@ const ext = {
         // If we want to vary the rewards in the future
         //const elapsedTime = evt.timeStamp
         try {
-          const user = await getCurrentUser()
-          if (!user) {
-            throw new Error('Invalid user id')
-          }
-
           // Add balance to pet
-          await setUserNewBalance(user.balance + 10)
+          const e = new CustomEvent(EARN_COINS, { detail: { coins: 10 } })
+          events.dispatchEvent(e)
         } catch (e) {
           console.error(e)
         }
