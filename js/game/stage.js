@@ -76,18 +76,6 @@ export class ComfyPetsStage extends ComfyNode {
     this.guiElements = [];
     this.gameObjectArrays.push(this.guiElements);
 
-    // First dog's hunger points
-    this.hungerPointsBar = this.addPointBar({
-      x: this.feedButton.x + this.feedButton.width / 4,
-      y: this.feedButton.y + this.feedButton.height + this.gutter,
-      width: 50,
-      height: 75,
-      maxPoints: 10,
-      label: "Hunger",
-      colour: "#aa00ee",
-    });
-    this.guiElements.push(this.hungerPointsBar);
-
     // Assets
     this.backgroundImage = new Image();
     this.backgroundImage.src =
@@ -107,6 +95,18 @@ export class ComfyPetsStage extends ComfyNode {
     });
 
     this.pets.push(pet);
+
+    this.hungerPointsBar = this.addPointBar({
+      x: this.feedButton.x + this.feedButton.width / 4,
+      y: this.feedButton.y + this.feedButton.height + this.gutter,
+      width: 50,
+      height: 75,
+      maxPoints: 10,
+      label: "Hunger",
+      colour: "#aa00ee",
+      id: pet.id,
+    });
+    this.guiElements.push(this.hungerPointsBar);
   }
 
   addFood() {
