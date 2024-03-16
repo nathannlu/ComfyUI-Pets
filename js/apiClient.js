@@ -22,11 +22,32 @@ const fetchWithCache = async (url) => {
 }
 
 export const getCurrentUser = async () => {
-  const url = "/comfy-cloud/user"
+  const url = "/comfy-pets/user"
   const { user } = await fetchWithCache(url)
-  const userId = user?.id;
-  console.log("got user id", userId, user)
-  return user;
+  let parsedUserData = {
+    ...user,
+    ["balance"]: parseFloat(user.balance)
+  }
+  return parsedUserData;
+}
+
+export const setUserNewBalance = async (balance) => {
+  try {
+    const url = "/comfy-pets/balance"
+    const data = {
+      balance
+    }
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data) // Convert the data to JSON format
+    };
+    await fetch(url, requestOptions).then((x) => x.json())
+  } catch (e) {
+    throw new Error("Something went wrong")
+  }
 }
 
 export async function ping() {
