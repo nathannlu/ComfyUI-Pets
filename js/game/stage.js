@@ -1,36 +1,56 @@
-import { ComfyNode } from "../comfy/comfy.js";
-import { gameDialog } from "../comfy/ui.js";
-import { getRandomNumber } from "../utils.js";
-import { Pet } from "./pet.js";
-import { Food } from "./food.js";
-import { EndlessRunnerGame } from "./endless_runner/index.js";
-import { addFoodEvent, startGameEvent } from "../apiClient.js";
-import { MediumButton } from "./buttons.js";
-import { FlappyGame } from "./flappy_game/index.js";
+import { ComfyNode } from '../comfy/comfy.js'
+import { gameDialog } from '../comfy/ui.js'
+import { getRandomNumber } from '../utils.js'
+import { Pet } from './pet.js'
+import { Food } from './food.js'
+import { EndlessRunnerGame } from './endless_runner/index.js'
+import {
+  addFoodEvent,
+  startGameEvent,
+  getCurrentUser,
+  setUserNewBalance,
+} from '../apiClient.js'
+import { MediumButton } from './buttons.js'
+import { FlappyGame } from './flappy_game/index.js'
+import { events, EARN_COINS } from '../events.js'
 import { PointBar } from "./ui/pointBar.js";
+
 
 /**
  * Describes the main game environment
  */
 export class ComfyPetsStage extends ComfyNode {
   constructor() {
-    super();
+    super()
 
     this.gutter = 8;
-
-    (this.title = "Comfy Pet"),
-      (this.feedButton = this.addButton("Feed pet", {}, () => {
-        this.addFood();
-        addFoodEvent();
-      }));
     this.feedButton.x = this.gutter;
     this.feedButton.y = this.gutter;
-    this.feedButton.fontSize = 14;
-    this.feedButton.fontWeight = "bold";
-    this.feedButton.fontFamily = "Courier New";
+    this.feedButton.fontSize = 14
+    this.feedButton.fontWeight = 'bold'
+    this.feedButton.fontFamily = 'Courier New'
+
+    // event emitter
+    this.events = events
+    this.events.addEventListener(EARN_COINS, async (event) => {
+      const coins = event.detail.coins
+      this.setTextDisplay(`+${coins} coins`)
+
+      // @hotfix - changes aren't propagating
+      // to db in time.
+      //await this.rerenderUser()
+      this.user.balance += parseInt(coins)
+
+      await setUserNewBalance(this.user.balance)
+    })
+    this.textDisplay = null
+
+    // Initialize User
+    this.user = null
+    this.initializeUser()
 
     // Endless Runner Game
-    this.gameButtonEndlessRunner = this.addButton("Play Hop Dog", {}, () => {
+    this.gameButtonEndlessRunner = this.addButton('Play Hop Dog', {}, () => {
       //const { canvas, endGame } = startGame()
       const game = new EndlessRunnerGame();
 
@@ -46,8 +66,9 @@ export class ComfyPetsStage extends ComfyNode {
     this.gameButtonEndlessRunner.fontFamily = "Courier New";
     this.gameButtonEndlessRunner.width = 150;
 
+
     // Flappy Game
-    this.gameButtonFlappyGame = this.addButton("Play Flappy Dog", {}, () => {
+    this.gameButtonFlappyGame = this.addButton('Play Flappy Dog', {}, () => {
       //const { canvas, endGame } = startGame()
       const game = new FlappyGame();
 
@@ -67,32 +88,41 @@ export class ComfyPetsStage extends ComfyNode {
 
     this.size = [400, 200];
 
+
+
     // Stage objects
-    this.pets = [];
-    this.foods = [];
-    this.gameObjectArrays.push(this.pets);
+    this.pets = []
+    this.foods = []
+    this.gameObjectArrays.push(this.pets)
 
     // GUI Elements
     this.guiElements = [];
     this.gameObjectArrays.push(this.guiElements);
 
     // Assets
-    this.backgroundImage = new Image();
+    this.backgroundImage = new Image()
     this.backgroundImage.src =
-      "https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/Summer2.png";
+      'https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/Summer2.png'
+  }
+
+  async initializeUser() {
+    this.user = await getCurrentUser()
+  }
+  async rerenderUser() {
+    await this.initializeUser()
   }
 
   addPet() {
-    const height = this.size[1];
-    const petWidth = 75;
-    const petHeight = 60;
+    const height = this.size[1]
+    const petWidth = 75
+    const petHeight = 60
 
     const pet = new Pet({
       x: 0,
       y: height - petHeight,
       width: petWidth,
       height: petHeight,
-    });
+    })
 
     this.pets.push(pet);
 
@@ -110,21 +140,21 @@ export class ComfyPetsStage extends ComfyNode {
   }
 
   addFood() {
-    const [width, height] = this.size;
-    const foodWidth = 25;
-    const foodHeight = 25;
+    const [width, height] = this.size
+    const foodWidth = 25
+    const foodHeight = 25
 
     // choose a random inbetween the bounding box
-    const foodPos = getRandomNumber(0, width - foodWidth);
+    const foodPos = getRandomNumber(0, width - foodWidth)
 
     const food = new Food({
       x: foodPos,
       y: height - foodHeight,
       width: foodWidth,
       height: foodHeight,
-    });
+    })
 
-    this.foods.push(food);
+    this.foods.push(food)
   }
 
   /**
@@ -132,11 +162,69 @@ export class ComfyPetsStage extends ComfyNode {
    */
   addButton(buttonText, options, callback) {
     //this.addWidget("button", buttonText, "image", callback)
-    var b = new MediumButton(buttonText, "#eeaa00", "#fff");
-    b.onClick = callback;
-    this.buttons.push(b);
+    var b = new MediumButton(buttonText, '#eeaa00', '#fff')
+    b.onClick = callback
+    this.buttons.push(b)
 
-    return b;
+    return b
+  }
+
+  setTextDisplay(text) {
+    // set an emote for t seconds
+    this.textDisplay = text
+
+    setTimeout(() => {
+      this.textDisplay = null
+    }, 1000)
+  }
+
+  renderUserCoins(ctx) {
+    if (this.user) {
+      const [width] = this.size
+
+      const text = `${this.user.balance} coins`
+      const fontSize = 16
+      const fontFamily = 'Arial'
+      ctx.font = `800 ${fontSize}px ${fontFamily}`
+
+      ctx.fillStyle = '#FFBF00'
+      ctx.textAlign = 'right'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(text, width - 16, 16)
+
+      // Stroke the text with white color outside
+      /*
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = .5; // Adjust the thickness of the outline
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      ctx.strokeText(text, width - 16, 16);
+      */
+    }
+  }
+
+  renderTextCenter(ctx) {
+    if (this.textDisplay) {
+      const [width, height] = this.size
+
+      // Calculate the position to render the text in the center
+      const x = width / 2
+      const y = height / 2
+
+      // Set font properties
+      const fontSize = 20
+      const fontFamily = 'Arial'
+      ctx.font = `bold ${fontSize}px ${fontFamily}`
+
+      // Text to render
+      const text = this.textDisplay
+
+      // Draw the text in the center
+      ctx.fillStyle = '#FFBF00'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(text, x, y)
+    }
   }
 
   addPointBar({
@@ -192,14 +280,14 @@ export class ComfyPetsStage extends ComfyNode {
   }
 
   renderPets(ctx) {
-    const [width] = this.size;
+    const [width] = this.size
 
     for (let i = 0; i < this.pets.length; i++) {
-      const pet = this.pets[i];
+      const pet = this.pets[i]
 
       // Delete inactive frames
       if (!pet.isActive) {
-        this.pets.splice(i, 1);
+        this.pets.splice(i, 1)
       }
 
       // update hunger
@@ -212,57 +300,59 @@ export class ComfyPetsStage extends ComfyNode {
       }
 
       // choose directions
-      pet.chooseDirection(this.foods);
+      pet.chooseDirection(this.foods)
 
       // choose directions - handle if pet walks off the map
       if (pet.x > width - 75) {
-        pet.currentDirection = "left";
+        pet.currentDirection = 'left'
       }
       if (pet.x < 0) {
-        pet.currentDirection = "right";
+        pet.currentDirection = 'right'
       }
 
       // render emote
       if (pet.emote) {
-        ctx.fillStyle = "blue";
-        ctx.font = "10px Arial";
-        ctx.fillText("❤️", pet.x + pet.width, pet.y);
+        ctx.fillStyle = 'blue'
+        ctx.font = '10px Arial'
+        ctx.fillText('❤️', pet.x + pet.width, pet.y)
       }
 
       // render emote
       if (pet.talk) {
-        pet.renderTextBubble(ctx);
+        pet.renderTextBubble(ctx)
       }
 
       // move the pet
       //pet._showHitBox(ctx)
-      pet.move(ctx, this.renderCount);
+      pet.move(ctx, this.renderCount)
     }
   }
 
   renderFoods(ctx) {
     for (let i = 0; i < this.foods.length; i++) {
-      const food = this.foods[i];
+      const food = this.foods[i]
 
       if (!food.isActive) {
-        this.foods.splice(i, 1);
+        this.foods.splice(i, 1)
       }
 
-      ctx.drawImage(food.image, food.x, food.y, food.width, food.height);
+      ctx.drawImage(food.image, food.x, food.y, food.width, food.height)
     }
   }
 
   renderBackground(ctx) {
-    const [width, height] = this.size;
-    ctx.drawImage(this.backgroundImage, 0, 0, width, height);
+    const [width, height] = this.size
+    ctx.drawImage(this.backgroundImage, 0, 0, width, height)
   }
 
   renderOnce() {
-    this.addPet();
+    this.addPet()
   }
 
   render(ctx) {
-    this.renderBackground(ctx);
+    this.renderBackground(ctx)
+    this.renderUserCoins(ctx)
+    this.renderTextCenter(ctx)
     //this.renderButtons(ctx)
     this.renderFoods(ctx);
     this.renderPets(ctx); // render pet onto canvas
