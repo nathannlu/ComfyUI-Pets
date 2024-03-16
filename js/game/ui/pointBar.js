@@ -13,7 +13,7 @@ export class PointBar extends GameObject {
     fontSize = 14,
     fontFamily = "Courier New",
     fontWeight = "bold",
-    id = null,
+    associatedId = null,
     initialPoints = maxPoints,
   }) {
     super(x, y, width, height);
@@ -25,7 +25,7 @@ export class PointBar extends GameObject {
     this.fontFamily = fontFamily;
     this.fontWeight = fontWeight;
     // id of gameObject to be associated with i.e. the pet
-    this.id = id;
+    this.associatedId = associatedId;
   }
 
   addPoints(points) {
