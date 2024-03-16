@@ -7,6 +7,7 @@ import { EndlessRunnerGame } from "./endless_runner/index.js";
 import { addFoodEvent, startGameEvent } from "../apiClient.js";
 import { MediumButton } from "./buttons.js";
 import { FlappyGame } from "./flappy_game/index.js";
+import { PointBar } from "./ui/pointBar.js";
 
 /**
  * Describes the main game environment
@@ -67,6 +68,22 @@ export class ComfyPetsStage extends ComfyNode {
     this.foods = [];
     this.gameObjectArrays.push(this.pets);
 
+    // GUI Elements
+    this.guiElements = [];
+    this.gameObjectArrays.push(this.guiElements);
+
+    // First dog's hunger points
+    this.hungerPointsBar = this.addPointBar(
+      50,
+      50,
+      50,
+      75,
+      10,
+      "Hunger",
+      "red"
+    );
+    this.guiElements.push(this.hungerPointsBar);
+
     // Assets
     this.backgroundImage = new Image();
     this.backgroundImage.src =
@@ -116,6 +133,40 @@ export class ComfyPetsStage extends ComfyNode {
     this.buttons.push(b);
 
     return b;
+  }
+
+  addPointBar(
+    x,
+    y,
+    width,
+    height,
+    maxPoints,
+    label,
+    colour,
+    id = null,
+    initialPoints = maxPoints
+  ) {
+    var pb = new PointBar(
+      x,
+      y,
+      width,
+      height,
+      maxPoints,
+      label,
+      colour,
+      id,
+      initialPoints
+    );
+    this.guiElements.push(pb);
+
+    return pb;
+  }
+
+  renderGUIElements(ctx) {
+    for (let i = 0; i < this.guiElements.length; i++) {
+      const guiElement = this.guiElements[i];
+      guiElement.render(ctx);
+    }
   }
 
   renderPets(ctx) {
@@ -184,5 +235,6 @@ export class ComfyPetsStage extends ComfyNode {
     //this.renderButtons(ctx)
     this.renderFoods(ctx);
     this.renderPets(ctx); // render pet onto canvas
+    this.renderGUIElements(ctx);
   }
 }
