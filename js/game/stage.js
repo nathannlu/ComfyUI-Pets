@@ -104,7 +104,7 @@ export class ComfyPetsStage extends ComfyNode {
       maxPoints: 10,
       label: "Hunger",
       colour: "#aa00ee",
-      id: pet.id,
+      associatedId: pet.id,
     });
     this.guiElements.push(this.hungerPointsBar);
   }
@@ -150,7 +150,7 @@ export class ComfyPetsStage extends ComfyNode {
     fontSize = 14,
     fontFamily = "Courier New",
     fontWeight = "bold",
-    id = null,
+    associatedId = null,
     initialPoints = maxPoints,
   }) {
     const pb = new PointBar({
@@ -164,7 +164,7 @@ export class ComfyPetsStage extends ComfyNode {
       fontSize: fontSize,
       fontFamily: fontFamily,
       fontWeight: fontWeight,
-      id: id,
+      associatedId: associatedId,
       initialPoints: initialPoints,
     });
     this.guiElements.push(pb);
@@ -179,6 +179,18 @@ export class ComfyPetsStage extends ComfyNode {
     }
   }
 
+  updatePointBars(value, associatedId) {
+    for (let i = 0; i < this.guiElements.length; i++) {
+      const guiElement = this.guiElements[i];
+      if (guiElement.associatedId == associatedId) {
+        guiElement.setPoints(value);
+      }
+    }
+
+    // clear inactive associated GUI elements
+    // this.guiElements = this.guiElements.filter((el) => el.objectId !== associatedId);
+  }
+
   renderPets(ctx) {
     const [width] = this.size;
 
@@ -188,6 +200,15 @@ export class ComfyPetsStage extends ComfyNode {
       // Delete inactive frames
       if (!pet.isActive) {
         this.pets.splice(i, 1);
+      }
+
+      // update hunger
+      const hungerUpdateValue = pet.updateHunger();
+      if (hungerUpdateValue !== null) {
+        this.updatePointBars(hungerUpdateValue, pet.id);
+        if (hungerUpdateValue === 0) {
+          pet.isActive = false;
+        }
       }
 
       // choose directions
