@@ -3,24 +3,10 @@
  * Like Flappy Bird, Jetpack Joyride, etc
  * @WIP
  */
-import { GameObject } from '../core.js'
+import { Obstacle } from './minigame.js'
 import { Pet } from '../pet.js'
 import { MediumButton } from '../buttons.js'
 import { events, EARN_COINS } from '../../events.js'
-
-class Obstacle extends GameObject {
-  constructor({ x, y, width, height }) {
-    super(x, y, width, height)
-
-    this.scoreCollected = false
-
-    this.image = new Image()
-    this.image.src =
-      'https://upload.wikimedia.org/wikipedia/commons/9/93/Mario_pipe.png'
-  }
-
-  // Additional methods or properties specific to the player can be added here
-}
 
 export class FlappyGame {
   constructor() {
@@ -172,6 +158,9 @@ export class FlappyGame {
   }
 
   createRectangle() {
+    const imgSrc =
+      'https://upload.wikimedia.org/wikipedia/commons/9/93/Mario_pipe.png'
+
     const gapHeight = 85
     const obstacleWidth = 75
     const bufferHeight = 20 // Buffer height for obstacle at the top
@@ -190,6 +179,8 @@ export class FlappyGame {
       y: 0, // Initial y-coordinate for the top obstacle
     })
     topRect.flipped = true
+    topRect.scoreCollected = false
+    topRect.image.src = imgSrc
 
     const bottomRect = new Obstacle({
       width: obstacleWidth,
@@ -197,6 +188,9 @@ export class FlappyGame {
       x: this.canvas.width, // Start from the right side of the canvas
       y: gapPosition + gapHeight, // Initial y-coordinate for the bottom obstacle
     })
+    bottomRect.scoreCollected = false
+    bottomRect.image.src = imgSrc
+
     return [topRect, bottomRect] // Return both obstacles as an array
   }
 

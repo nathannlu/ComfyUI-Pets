@@ -3,12 +3,24 @@
  * Like Flappy Bird, Jetpack Joyride, etc
  * @WIP
  */
-import { Obstacle } from './minigame.js'
+import { GameObject } from '../core.js'
 import { Pet } from '../pet.js'
 import { MediumButton } from '../buttons.js'
 import { events, EARN_COINS } from '../../events.js'
 
-export class EndlessRunnerGame {
+export class Obstacle extends GameObject {
+  constructor({ x, y, width, height }) {
+    super(x, y, width, height)
+
+    this.image = new Image()
+    this.image.src =
+      'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/bed37cc7-6f06-4834-99f3-65e681a17e36/deyijro-4c901a78-91d7-4d70-8660-ac5ad6f6ba02.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2JlZDM3Y2M3LTZmMDYtNDgzNC05OWYzLTY1ZTY4MWExN2UzNlwvZGV5aWpyby00YzkwMWE3OC05MWQ3LTRkNzAtODY2MC1hYzVhZDZmNmJhMDIucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.TcAzWFbLGW-nlsoMq2OJ9IzZxQVqhTPgNAk2qGeEdNc'
+  }
+
+  // Additional methods or properties specific to the player can be added here
+}
+
+export class Minigame {
   constructor() {
     // canvas
     this.canvas = document.createElement('canvas')
