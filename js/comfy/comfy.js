@@ -89,10 +89,9 @@ export class ComfyNode extends LiteGraph.LGraphNode {
   }
 
   onMouseDown() {
-    const [mouseX, mouseY] = this.getRelativeMouseWithinNode();
+    const [mouseX, mouseY] = this.getRelativeMouseWithinNode()
     // Adjust mouse hitbox as necessary
-    const mouse = { x: mouseX, y: mouseY, width: 5, height: 5 };
-
+    const mouse = { x: mouseX, y: mouseY, width: 5, height: 5 }
 
     for (let i = 0; i < this.buttons.length; i++) {
       const button = this.buttons[i]

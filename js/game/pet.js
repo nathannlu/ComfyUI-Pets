@@ -55,9 +55,9 @@ export class Pet extends GameObject {
     this.talk = false
     this.talkText = ''
 
-    this.hungerPoints = 10;
-    this.lastHungerDepletionTime = Date.now(); // ms; sets the last time the pet's hunger dropped 1 point
-    this.hungerDepletionRate = 43200000; // ms; how often the pet's hunger drops 1 point. This is 1/10 of 5 days
+    this.hungerPoints = 10
+    this.lastHungerDepletionTime = Date.now() // ms; sets the last time the pet's hunger dropped 1 point
+    this.hungerDepletionRate = 43200000 // ms; how often the pet's hunger drops 1 point. This is 1/10 of 5 days
 
     // Properties here tell when the
     // pet to change directions. Right now
@@ -160,25 +160,23 @@ export class Pet extends GameObject {
   }
 
   updateHunger() {
-    const timeElapsed = Date.now() - this.lastHungerDepletionTime;
+    const timeElapsed = Date.now() - this.lastHungerDepletionTime
 
     if (timeElapsed > this.hungerDepletionRate) {
       // calculate amount of points to deplete
-      const pointsToDeplete = Math.floor(
-        timeElapsed / this.hungerDepletionRate
-      );
+      const pointsToDeplete = Math.floor(timeElapsed / this.hungerDepletionRate)
 
-      this.hungerPoints -= pointsToDeplete;
-      this.lastHungerDepletionTime = Date.now();
+      this.hungerPoints -= pointsToDeplete
+      this.lastHungerDepletionTime = Date.now()
 
       // Check death condition
       if (this.hungerPoints <= 0) {
-        this.hungerPoints = 0;
+        this.hungerPoints = 0
       }
 
-      return this.hungerPoints;
+      return this.hungerPoints
     }
-    return null;
+    return null
   }
 
   move(ctx, renderCount) {
