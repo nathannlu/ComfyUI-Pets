@@ -14,6 +14,7 @@ import {
 import { MediumButton } from './buttons.js'
 import { FlappyGame } from './flappy_game/index.js'
 import { events, EARN_COINS } from '../events.js'
+import { PointBar } from './ui/pointBar.js'
 
 /**
  * Describes the main game environment
@@ -26,8 +27,10 @@ export class ComfyPetsStage extends ComfyNode {
         this.addFood()
         addFoodEvent()
       }))
-    this.feedButton.x = 8
-    this.feedButton.y = 8
+    this.gutter = 8
+
+    this.feedButton.x = this.gutter
+    this.feedButton.y = this.gutter
     this.feedButton.fontSize = 14
     this.feedButton.fontWeight = 'bold'
     this.feedButton.fontFamily = 'Courier New'
@@ -60,8 +63,8 @@ export class ComfyPetsStage extends ComfyNode {
       gameDialog.show(game.canvas)
       startGameEvent()
     })
-    this.gameButtonEndlessRunner.x = 8 + this.feedButton.width + 8
-    this.gameButtonEndlessRunner.y = 8
+    this.gameButtonEndlessRunner.x = this.gutter + this.feedButton.width + 8
+    this.gameButtonEndlessRunner.y = this.gutter
     this.gameButtonEndlessRunner.backgroundColor = '#0d47a1'
     this.gameButtonEndlessRunner.fontSize = 14
     this.gameButtonEndlessRunner.fontWeight = 'bold'
@@ -77,8 +80,10 @@ export class ComfyPetsStage extends ComfyNode {
       gameDialog.show(game.canvas)
       startGameEvent()
     })
-    this.gameButtonFlappyGame.x = 8 + this.feedButton.width + 8
-    this.gameButtonFlappyGame.y = 8 + this.gameButtonFlappyGame.height + 8
+    this.gameButtonFlappyGame.x =
+      this.gutter + this.feedButton.width + this.gutter
+    this.gameButtonFlappyGame.y =
+      this.gutter + this.gameButtonFlappyGame.height + this.gutter
     this.gameButtonFlappyGame.backgroundColor = '#0d47a1'
     this.gameButtonFlappyGame.fontSize = 14
     this.gameButtonFlappyGame.fontWeight = 'bold'
@@ -103,6 +108,10 @@ export class ComfyPetsStage extends ComfyNode {
     this.pets = []
     this.foods = []
     this.gameObjectArrays.push(this.pets)
+
+    // GUI Elements
+    this.guiElements = []
+    this.gameObjectArrays.push(this.guiElements)
 
     // Assets
     this.backgroundImage = new Image()
@@ -130,6 +139,18 @@ export class ComfyPetsStage extends ComfyNode {
     })
 
     this.pets.push(pet)
+
+    this.hungerPointsBar = this.addPointBar({
+      x: this.feedButton.x + this.feedButton.width / 4,
+      y: this.feedButton.y + this.feedButton.height + this.gutter,
+      width: 50,
+      height: 75,
+      maxPoints: 10,
+      label: 'Hunger',
+      colour: '#aa00ee',
+      associatedId: pet.id,
+    })
+    this.guiElements.push(this.hungerPointsBar)
   }
 
   addFood() {
@@ -220,6 +241,58 @@ export class ComfyPetsStage extends ComfyNode {
     }
   }
 
+  addPointBar({
+    x,
+    y,
+    width,
+    height,
+    maxPoints,
+    label,
+    colour,
+    fontSize = 14,
+    fontFamily = 'Courier New',
+    fontWeight = 'bold',
+    associatedId = null,
+    initialPoints = maxPoints,
+  }) {
+    const pb = new PointBar({
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      maxPoints: maxPoints,
+      colour: colour,
+      label: label,
+      fontSize: fontSize,
+      fontFamily: fontFamily,
+      fontWeight: fontWeight,
+      associatedId: associatedId,
+      initialPoints: initialPoints,
+    })
+    this.guiElements.push(pb)
+
+    return pb
+  }
+
+  renderGUIElements(ctx) {
+    for (let i = 0; i < this.guiElements.length; i++) {
+      const guiElement = this.guiElements[i]
+      guiElement.render(ctx)
+    }
+  }
+
+  updatePointBars(value, associatedId) {
+    for (let i = 0; i < this.guiElements.length; i++) {
+      const guiElement = this.guiElements[i]
+      if (guiElement.associatedId == associatedId) {
+        guiElement.setPoints(value)
+      }
+    }
+
+    // clear inactive associated GUI elements
+    // this.guiElements = this.guiElements.filter((el) => el.objectId !== associatedId);
+  }
+
   renderPets(ctx) {
     const [width] = this.size
 
@@ -229,6 +302,15 @@ export class ComfyPetsStage extends ComfyNode {
       // Delete inactive frames
       if (!pet.isActive) {
         this.pets.splice(i, 1)
+      }
+
+      // update hunger
+      const hungerUpdateValue = pet.updateHunger()
+      if (hungerUpdateValue !== null) {
+        this.updatePointBars(hungerUpdateValue, pet.id)
+        if (hungerUpdateValue === 0) {
+          pet.isActive = false
+        }
       }
 
       // choose directions
@@ -288,5 +370,6 @@ export class ComfyPetsStage extends ComfyNode {
     //this.renderButtons(ctx)
     this.renderFoods(ctx)
     this.renderPets(ctx) // render pet onto canvas
+    this.renderGUIElements(ctx)
   }
 }

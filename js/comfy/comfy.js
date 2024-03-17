@@ -90,6 +90,8 @@ export class ComfyNode extends LiteGraph.LGraphNode {
 
   onMouseDown() {
     const [mouseX, mouseY] = this.getRelativeMouseWithinNode()
+    // Adjust mouse hitbox as necessary
+    const mouse = { x: mouseX, y: mouseY, width: 5, height: 5 }
 
     for (let i = 0; i < this.buttons.length; i++) {
       const button = this.buttons[i]
@@ -103,9 +105,6 @@ export class ComfyNode extends LiteGraph.LGraphNode {
       const gameObjects = this.gameObjectArrays[i]
       for (let j = 0; j < gameObjects.length; j++) {
         const gameObject = gameObjects[j]
-
-        // Adjust mouse hitbox as necessary
-        const mouse = { x: mouseX, y: mouseY, width: 5, height: 5 }
         if (gameObject.isTouching(mouse)) {
           gameObject.onClick()
         }
