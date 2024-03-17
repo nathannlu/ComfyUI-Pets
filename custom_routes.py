@@ -28,3 +28,21 @@ async def comfy_pets_update_balance(request):
     except Exception as e:
         print("Error:", e)
         return web.json_response({ "error": str(e) }, status=400)
+
+
+@server.PromptServer.instance.routes.post("/comfy-pets/inventory")
+async def comfy_pets_update_inventory(request):
+    try:
+        data = await request.json()
+        inventory = data.get("inventory")
+
+        persistence.update_inventory(inventory)
+
+        return web.json_response({
+            "message": "Inventory updated successfully"
+        }, content_type='application/json')
+
+    except Exception as e:
+        print("Error:", e)
+        return web.json_response({ "error": str(e) }, status=400)
+

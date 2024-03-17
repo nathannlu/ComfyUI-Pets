@@ -1,4 +1,5 @@
 import { items, getItemById } from './items.js'
+import { user } from '../user/index.js'
 
 export const container = document.createElement('div')
 container.innerHTML = `
@@ -30,10 +31,21 @@ function generateShopHTML() {
   return html
 }
 
-window.comfyPetsShopBuyItem = (id) => {
+window.comfyPetsShopBuyItem = async (id) => {
+  const item = getItemById(id)
   // check if user has enough funds
+  if (user.balance < item.price) {
+    // @todo display popup
+    console.error(
+      'Not enough funds. You are missing',
+      item.price - user.balance,
+    )
+    return
+  }
+
+  // Charge user
+  await user.chargeBalance(item.price)
 
   // persist newly bought item into user's inventory
-
-  console.log('Bought', getItemById(id))
+  await user.addItemToInventory(item)
 }

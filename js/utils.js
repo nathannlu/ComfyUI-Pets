@@ -1,3 +1,9 @@
+export function prepareJSON(jsonString) {
+  // Replace single quotes with double quotes
+  const correctedString = jsonString.replace(/'/g, '"')
+  return correctedString
+}
+
 export function darkenHexColor(hexColor, percent) {
   // Ensure the percent is between 0 and 100
   percent = Math.min(100, Math.max(0, percent))

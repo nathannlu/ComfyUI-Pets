@@ -5,16 +5,13 @@ import { Pet } from './pet.js'
 import { Food } from './food.js'
 import { container } from './shop/index.js'
 import { EndlessRunnerGame } from './endless_runner/index.js'
-import {
-  addFoodEvent,
-  startGameEvent,
-  getCurrentUser,
-  setUserNewBalance,
-} from '../apiClient.js'
+import { addFoodEvent, startGameEvent } from '../apiClient.js'
 import { MediumButton } from './buttons.js'
 import { FlappyGame } from './flappy_game/index.js'
 import { events, EARN_COINS } from '../events.js'
 import { PointBar } from './ui/pointBar.js'
+
+import { user } from './user/index.js'
 
 /**
  * Describes the main game environment
@@ -44,15 +41,14 @@ export class ComfyPetsStage extends ComfyNode {
       // @hotfix - changes aren't propagating
       // to db in time.
       //await this.rerenderUser()
-      this.user.balance += parseInt(coins)
 
-      await setUserNewBalance(this.user.balance)
+      this.user.addBalance(parseInt(coins))
     })
     this.textDisplay = null
 
     // Initialize User
-    this.user = null
-    this.initializeUser()
+    this.user = user
+    //this.initializeUser()
 
     // Endless Runner Game
     this.gameButtonEndlessRunner = this.addButton('Play Hop Dog', {}, () => {
@@ -119,12 +115,14 @@ export class ComfyPetsStage extends ComfyNode {
       'https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/Summer2.png'
   }
 
+  /*
   async initializeUser() {
     this.user = await getCurrentUser()
   }
   async rerenderUser() {
     await this.initializeUser()
   }
+  */
 
   addPet() {
     const height = this.size[1]
