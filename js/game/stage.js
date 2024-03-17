@@ -3,6 +3,7 @@ import { gameDialog } from '../comfy/ui.js'
 import { getRandomNumber } from '../utils.js'
 import { Pet } from './pet.js'
 import { Food } from './food.js'
+import { container } from './shop/index.js'
 import { EndlessRunnerGame } from './endless_runner/index.js'
 import {
   addFoodEvent,
@@ -83,6 +84,18 @@ export class ComfyPetsStage extends ComfyNode {
     this.gameButtonFlappyGame.fontWeight = 'bold'
     this.gameButtonFlappyGame.fontFamily = 'Courier New'
     this.gameButtonFlappyGame.width = 150
+
+    // Shop
+    this.shopButton = this.addButton('Shop', {}, () => {
+      gameDialog.show(container)
+    })
+    this.shopButton.x = 8 + this.feedButton.width + this.gameButtonFlappyGame.width + 8 + 8
+    this.shopButton.y = 8
+    this.shopButton.backgroundColor = '#006400'
+    this.shopButton.fontSize = 14
+    this.shopButton.fontWeight = 'bold'
+    this.shopButton.fontFamily = 'Courier New'
+
 
     this.size = [400, 200]
 

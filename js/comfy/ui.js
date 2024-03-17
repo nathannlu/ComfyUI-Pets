@@ -1,7 +1,5 @@
 import { ComfyDialog, $el } from './comfy.js'
 
-// @todo - pet games
-
 class GameDialog extends ComfyDialog {
   constructor() {
     super()
