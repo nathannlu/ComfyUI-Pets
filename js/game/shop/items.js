@@ -1,8 +1,8 @@
 // Enum - item categories
 const Types = {
-  FOOD: "FOOD",
-  FURNITURE: "FURNITURE",
-  BACKGROUND: "BACKGROUND",
+  FOOD: 'FOOD',
+  FURNITURE: 'FURNITURE',
+  BACKGROUND: 'BACKGROUND',
 }
 
 // shop items
@@ -13,8 +13,8 @@ const APPLE = {
   type: Types.FOOD,
   data: {
     effects: {
-      hunger: 2
-    }
+      hunger: 2,
+    },
   },
   description: 'This is an apple',
 }
@@ -24,8 +24,8 @@ const ORANGE = {
   price: 175,
   data: {
     effects: {
-      hunger: 4
-    }
+      hunger: 4,
+    },
   },
   description: 'This is an orange',
 }
@@ -35,16 +35,16 @@ const FILET_MIGNOM = {
   price: 400,
   data: {
     effects: {
-      hunger: 9
-    }
+      hunger: 9,
+    },
   },
   description: 'Eating luxurious',
 }
 
 export const items = {
-  '1': APPLE,
-  '2': ORANGE,
-  '3': FILET_MIGNOM,
+  1: APPLE,
+  2: ORANGE,
+  3: FILET_MIGNOM,
 }
 
 export const getItemById = (id) => {
