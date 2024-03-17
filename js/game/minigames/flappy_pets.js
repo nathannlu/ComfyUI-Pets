@@ -1,47 +1,17 @@
-/**
- * Implementation of an endless-runner type game.
- * Like Flappy Bird, Jetpack Joyride, etc
- * @WIP
- */
-import { GameObject } from '../core.js'
+import { Minigame, Obstacle } from './minigame.js'
 import { Pet } from '../pet.js'
-import { MediumButton } from '../buttons.js'
-import { events, EARN_COINS } from '../../events.js'
 
-class Obstacle extends GameObject {
-  constructor({ x, y, width, height }) {
-    super(x, y, width, height)
-
-    this.scoreCollected = false
-
-    this.image = new Image()
-    this.image.src =
-      'https://upload.wikimedia.org/wikipedia/commons/9/93/Mario_pipe.png'
-  }
-
-  // Additional methods or properties specific to the player can be added here
-}
-
-export class FlappyGame {
+export class FlappyGame extends Minigame {
   constructor() {
+    super()
     // canvas
-    this.canvas = document.createElement('canvas')
-    this.canvas.id = 'comfy-pets-runner-game'
+    this.canvas.id = 'comfy-pets-flappy-game'
     this.canvas.width = 400
     this.canvas.height = 500
-    this.context = this.canvas.getContext('2d')
 
     // assets
-    this.backgroundImage = new Image()
     this.backgroundImage.src =
       'https://media.istockphoto.com/id/1333010525/vector/simple-flat-pixel-art-illustration-of-cartoon-outdoor-landscape-background-pixel-arcade.jpg?s=612x612&w=0&k=20&c=uTGqB9fhmjzaNd17EGRHYU04_70K7a3M8ilRoJjDwtY='
-
-    // game states
-    // default dont start the game
-    this.isPaused = true
-    this.animatonId = null
-    this.eventListeners = {}
-    this.score = 0
 
     // Physics values
     this.gravity = 0.8
@@ -60,71 +30,13 @@ export class FlappyGame {
     this.blueRect.velocityY = this.initialJumpVelocity
 
     // enemies
-    this.redRectangles = []
     this.redRectangleCooldown = 0
     this.baseRedRectangleSpeed = 3
-
-    this.buttons = []
 
     // Start loading screen
     //this.renderLoadingScreen();
     this.startGame()
     this.renderCount = 0
-  }
-
-  addButton(buttonText, options, callback) {
-    //this.addWidget("button", buttonText, "image", callback)
-    var b = new MediumButton(buttonText, '#eeaa00', '#fff')
-    b.onClick = callback
-    this.buttons.push(b)
-
-    return b
-  }
-
-  renderLoadingScreen() {
-    let img = new Image()
-    img.src = this.blueRect.gifSrc
-    img.onload = () => {
-      // Draw the image onto the canvas
-      this.context.drawImage(
-        img,
-        50, // x
-        200, // y
-        175, // width
-        150, // height
-      )
-    }
-
-    this.context.fillStyle = 'white'
-    //this.context.textAlign = 'center';
-    //this.context.textBaseline = 'middle';
-
-    this.context.font = `bold 32px Courier New`
-
-    this.context.fillText('Hello world', 50, 50)
-
-    // Render button
-    const startButton = new MediumButton('Start', '#eeaa00', '#fff')
-    startButton.onClick = () => {
-      console.log('Hello')
-      //this.startGame();
-    }
-    startButton.render(this.context, this.renderCount)
-
-    //this.buttons.push(startButton)
-  }
-
-  renderDefeatScreen() {
-    this.context.fillStyle = 'white'
-    this.context.font = `bold 32px Courier New`
-    this.context.fillText('You lost', 50, 50)
-    this.context.fillText('Score: ' + this.score, 50, 100)
-
-    this.context.fillStyle = '#FFBF00'
-    this.context.fillText(`+${this.score} coins`, 50, 150)
-
-    const e = new CustomEvent(EARN_COINS, { detail: { coins: this.score } })
-    events.dispatchEvent(e)
   }
 
   startGame() {
@@ -150,28 +62,10 @@ export class FlappyGame {
     this.render()
   }
 
-  togglePause() {
-    this.isPaused = !this.isPaused
-    if (this.isPaused) {
-      cancelAnimationFrame(this.animationId)
-    } else {
-      this.render() // Resume the animation
-    }
-  }
-
-  endGame() {
-    // Cancel animation frame
-    cancelAnimationFrame(this.animationId)
-
-    // Remove event listeners
-    for (const [type, listener] of Object.entries(this.eventListeners)) {
-      document.removeEventListener(type, listener)
-    }
-
-    console.log('Closing game')
-  }
-
   createRectangle() {
+    const imgSrc =
+      'https://upload.wikimedia.org/wikipedia/commons/9/93/Mario_pipe.png'
+
     const gapHeight = 85
     const obstacleWidth = 75
     const bufferHeight = 20 // Buffer height for obstacle at the top
@@ -190,6 +84,8 @@ export class FlappyGame {
       y: 0, // Initial y-coordinate for the top obstacle
     })
     topRect.flipped = true
+    topRect.scoreCollected = false
+    topRect.image.src = imgSrc
 
     const bottomRect = new Obstacle({
       width: obstacleWidth,
@@ -197,6 +93,9 @@ export class FlappyGame {
       x: this.canvas.width, // Start from the right side of the canvas
       y: gapPosition + gapHeight, // Initial y-coordinate for the bottom obstacle
     })
+    bottomRect.scoreCollected = false
+    bottomRect.image.src = imgSrc
+
     return [topRect, bottomRect] // Return both obstacles as an array
   }
 
@@ -307,17 +206,6 @@ export class FlappyGame {
         this.blueRect.isJumping = false
       }
     }
-  }
-
-  renderBackground() {
-    //const [width, height] = this.size
-    this.context.drawImage(
-      this.backgroundImage,
-      0,
-      0,
-      this.canvas.width,
-      this.canvas.height,
-    )
   }
 
   /**
