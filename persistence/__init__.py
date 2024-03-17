@@ -3,10 +3,14 @@ import dbm
 import uuid
 from datetime import datetime
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+data_path = os.path.join(current_dir, ".dat")
+u_path = os.path.join(data_path, "u")
+
 def set_user_id():
-    if not os.path.exists("./.dat"):
-        os.makedirs("./.dat")
-    with dbm.open('./.dat/u', 'c') as db:
+    if not os.path.exists(data_path):
+        os.makedirs(data_path)
+    with dbm.open(u_path, 'c') as db:
         if b'user_id' not in db:
             db[b'user_id'] = str(uuid.uuid4()).encode('utf-8')
             db[b'balance'] = str(0).encode('utf-8')
@@ -16,9 +20,9 @@ def set_user_id():
 
 def get_current_user():
     user = {}
-    if not os.path.exists("./.dat"):
-        os.makedirs("./.dat")
-    with dbm.open('./.dat/u', 'c') as db:
+    if not os.path.exists(data_path):
+        os.makedirs(data_path)
+    with dbm.open(u_path, 'c') as db:
 
         # Check if user exists
         if b'user_id' not in db:
@@ -36,5 +40,5 @@ def get_current_user():
     return user
 
 def update_balance(balance):
-    with dbm.open('./.dat/u', 'w') as db:
+    with dbm.open(u_path, 'w') as db:
         db[b'balance'] = str(balance).encode('utf-8')
