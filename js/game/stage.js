@@ -3,7 +3,8 @@ import { gameDialog } from '../comfy/ui.js'
 import { getRandomNumber } from '../utils.js'
 import { Pet } from './pet.js'
 import { Food } from './food.js'
-import { EndlessRunnerGame } from './endless_runner/index.js'
+import { EndlessRunnerGame } from './minigames/endless_runner.js'
+import { FlappyGame } from './minigames/flappy_pets.js'
 import {
   addFoodEvent,
   startGameEvent,
@@ -11,7 +12,6 @@ import {
   setUserNewBalance,
 } from '../apiClient.js'
 import { MediumButton } from './buttons.js'
-import { FlappyGame } from './flappy_game/index.js'
 import { events, EARN_COINS } from '../events.js'
 import { PointBar } from './ui/pointBar.js'
 
