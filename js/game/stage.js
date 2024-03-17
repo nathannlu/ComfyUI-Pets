@@ -22,8 +22,13 @@ import { PointBar } from "./ui/pointBar.js";
 export class ComfyPetsStage extends ComfyNode {
   constructor() {
     super()
-
+    ;(this.title = 'Comfy Pet'),
+      (this.feedButton = this.addButton('Feed pet', {}, () => {
+        this.addFood()
+        addFoodEvent()
+      }))
     this.gutter = 8;
+
     this.feedButton.x = this.gutter;
     this.feedButton.y = this.gutter;
     this.feedButton.fontSize = 14
