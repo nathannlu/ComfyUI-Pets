@@ -1,6 +1,6 @@
-import { items, getItemById } from "./items.js";
+import { items, getItemById } from './items.js'
 
-export const container = document.createElement("div");
+export const container = document.createElement('div')
 container.innerHTML = `
 <div style="width: 500px">
   <h1>
@@ -15,19 +15,19 @@ container.innerHTML = `
 
 // Function to generate HTML for shop items
 function generateShopHTML() {
-  let html = "";
+  let html = ''
 
-  Object.values(items).forEach(item => {
+  Object.values(items).forEach((item) => {
     html += `
       <div class="shop-item">
         <h3>${item.name}</h3>
         <p>Price: $${item.price}</p>
         <button onclick="comfyPetsShopBuyItem(${item.id})">Buy</button>
       </div>
-    `;
-  });
+    `
+  })
 
-  return html;
+  return html
 }
 
 window.comfyPetsShopBuyItem = (id) => {
@@ -35,5 +35,5 @@ window.comfyPetsShopBuyItem = (id) => {
 
   // persist newly bought item into user's inventory
 
-  console.log("Bought", getItemById(id))
+  console.log('Bought', getItemById(id))
 }

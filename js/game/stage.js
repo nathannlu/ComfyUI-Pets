@@ -89,13 +89,13 @@ export class ComfyPetsStage extends ComfyNode {
     this.shopButton = this.addButton('Shop', {}, () => {
       gameDialog.show(container)
     })
-    this.shopButton.x = 8 + this.feedButton.width + this.gameButtonFlappyGame.width + 8 + 8
+    this.shopButton.x =
+      8 + this.feedButton.width + this.gameButtonFlappyGame.width + 8 + 8
     this.shopButton.y = 8
     this.shopButton.backgroundColor = '#006400'
     this.shopButton.fontSize = 14
     this.shopButton.fontWeight = 'bold'
     this.shopButton.fontFamily = 'Courier New'
-
 
     this.size = [400, 200]
 
