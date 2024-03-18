@@ -11,6 +11,7 @@ export const ENDPOINT = 'https://comfy-pets-cadc142b6d8e.herokuapp.com'
 const EVENTS = {
   ADD_FOOD: 'ADD_FOOD',
   START_GAME: 'START_GAME',
+  OPEN_SHOP: 'OPEN_SHOP',
 }
 
 const fetchWithCache = async (url) => {
@@ -82,15 +83,22 @@ export async function ping() {
 
 export async function addFoodEvent() {
   const user = await getCurrentUser()
-  const userId = user?.id
+  const userId = user?.user_id
   const url = `${ENDPOINT}/e?t=${EVENTS.ADD_FOOD}&u=${userId}`
 
   await fetch(url)
 }
 export async function startGameEvent() {
   const user = await getCurrentUser()
-  const userId = user?.id
+  const userId = user?.user_id
   const url = `${ENDPOINT}/e?t=${EVENTS.START_GAME}&u=${userId}`
+
+  await fetch(url)
+}
+export async function openShopEvent() {
+  const user = await getCurrentUser()
+  const userId = user?.user_id
+  const url = `${ENDPOINT}/e?t=${EVENTS.OPEN_SHOP}&u=${userId}`
 
   await fetch(url)
 }
