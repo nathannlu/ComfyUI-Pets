@@ -31,6 +31,10 @@ def get_current_user():
         if b'balance' not in db:
             db[b'balance'] = str(0).encode('utf-8')
 
+        if b'inventory' not in db:
+            # Initialize an empty inventory
+            db[b'inventory'] = str({}).encode('utf-8')
+
         db[b'last_login'] = datetime.now().isoformat().encode('utf-8')
 
         # return data
@@ -42,3 +46,7 @@ def get_current_user():
 def update_balance(balance):
     with dbm.open(u_path, 'w') as db:
         db[b'balance'] = str(balance).encode('utf-8')
+
+def update_inventory(inventory):
+    with dbm.open(u_path, 'w') as db:
+        db[b'inventory'] = str(inventory).encode('utf-8')

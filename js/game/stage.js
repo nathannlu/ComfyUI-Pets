@@ -3,17 +3,15 @@ import { gameDialog } from '../comfy/ui.js'
 import { getRandomNumber } from '../utils.js'
 import { Pet } from './pet.js'
 import { Food } from './food.js'
+import { container } from './shop/index.js'
 import { EndlessRunnerGame } from './minigames/endless_runner.js'
 import { FlappyGame } from './minigames/flappy_pets.js'
-import {
-  addFoodEvent,
-  startGameEvent,
-  getCurrentUser,
-  setUserNewBalance,
-} from '../apiClient.js'
+import { addFoodEvent, startGameEvent } from '../apiClient.js'
 import { MediumButton } from './buttons.js'
 import { events, EARN_COINS } from '../events.js'
 import { PointBar } from './ui/pointBar.js'
+
+import { user } from './user/index.js'
 
 /**
  * Describes the main game environment
@@ -43,15 +41,14 @@ export class ComfyPetsStage extends ComfyNode {
       // @hotfix - changes aren't propagating
       // to db in time.
       //await this.rerenderUser()
-      this.user.balance += parseInt(coins)
 
-      await setUserNewBalance(this.user.balance)
+      this.user.addBalance(parseInt(coins))
     })
     this.textDisplay = null
 
     // Initialize User
-    this.user = null
-    this.initializeUser()
+    this.user = user
+    //this.initializeUser()
 
     // Endless Runner Game
     this.gameButtonEndlessRunner = this.addButton('Play Hop Dog', {}, () => {
@@ -89,6 +86,18 @@ export class ComfyPetsStage extends ComfyNode {
     this.gameButtonFlappyGame.fontFamily = 'Courier New'
     this.gameButtonFlappyGame.width = 150
 
+    // Shop
+    this.shopButton = this.addButton('Shop', {}, () => {
+      gameDialog.show(container)
+    })
+    this.shopButton.x =
+      8 + this.feedButton.width + this.gameButtonFlappyGame.width + 8 + 8
+    this.shopButton.y = 8
+    this.shopButton.backgroundColor = '#006400'
+    this.shopButton.fontSize = 14
+    this.shopButton.fontWeight = 'bold'
+    this.shopButton.fontFamily = 'Courier New'
+
     this.size = [400, 200]
 
     // Stage objects
@@ -106,12 +115,14 @@ export class ComfyPetsStage extends ComfyNode {
       'https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/Summer2.png'
   }
 
+  /*
   async initializeUser() {
     this.user = await getCurrentUser()
   }
   async rerenderUser() {
     await this.initializeUser()
   }
+  */
 
   addPet() {
     const height = this.size[1]

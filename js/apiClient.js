@@ -1,3 +1,5 @@
+import { prepareJSON } from './utils.js'
+
 /**
  * Responsible for interacting with ComfyUI backend,
  * or cloud
@@ -27,6 +29,7 @@ export const getCurrentUser = async () => {
   let parsedUserData = {
     ...user,
     ['balance']: parseFloat(user.balance),
+    ['inventory']: JSON.parse(prepareJSON(user.inventory)),
   }
   return parsedUserData
 }
@@ -50,9 +53,28 @@ export const setUserNewBalance = async (balance) => {
   }
 }
 
+export const setUserNewInventory = async (inventory) => {
+  try {
+    const url = '/comfy-pets/inventory' // Update the URL to the inventory endpoint
+    const data = {
+      inventory,
+    }
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data), // Convert the data to JSON format
+    }
+    await fetch(url, requestOptions).then((x) => x.json())
+  } catch (e) {
+    throw new Error('Something went wrong')
+  }
+}
+
 export async function ping() {
   const user = await getCurrentUser()
-  const userId = user?.id
+  const userId = user?.user_id
   const url = `${ENDPOINT}/p?e=${userId}`
 
   await fetch(url)
