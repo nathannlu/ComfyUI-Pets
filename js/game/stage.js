@@ -6,7 +6,12 @@ import { Food } from './food.js'
 import { container } from './shop/index.js'
 import { EndlessRunnerGame } from './minigames/endless_runner.js'
 import { FlappyGame } from './minigames/flappy_pets.js'
-import { addFoodEvent, startGameEvent, openShopEvent } from '../apiClient.js'
+import {
+  addFoodEvent,
+  startGameEvent,
+  openShopEvent,
+  startRenderEvent,
+} from '../apiClient.js'
 import { MediumButton } from './buttons.js'
 import { events, EARN_COINS } from '../events.js'
 import { PointBar } from './ui/pointBar.js'
@@ -124,6 +129,10 @@ export class ComfyPetsStage extends ComfyNode {
     await this.initializeUser()
   }
   */
+
+  onAdded() {
+    startRenderEvent()
+  }
 
   addPet() {
     const height = this.size[1]

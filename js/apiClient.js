@@ -12,6 +12,7 @@ const EVENTS = {
   ADD_FOOD: 'ADD_FOOD',
   START_GAME: 'START_GAME',
   OPEN_SHOP: 'OPEN_SHOP',
+  START_RENDER: 'START_RENDER',
 }
 
 const fetchWithCache = async (url) => {
@@ -99,6 +100,14 @@ export async function openShopEvent() {
   const user = await getCurrentUser()
   const userId = user?.user_id
   const url = `${ENDPOINT}/e?t=${EVENTS.OPEN_SHOP}&u=${userId}`
+
+  await fetch(url)
+}
+
+export async function startRenderEvent() {
+  const user = await getCurrentUser()
+  const userId = user?.user_id
+  const url = `${ENDPOINT}/e?t=${EVENTS.START_RENDER}&u=${userId}`
 
   await fetch(url)
 }
