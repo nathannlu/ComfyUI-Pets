@@ -332,7 +332,10 @@ export class ComfyPetsStage extends ComfyNode {
         pet.currentDirection = 'right'
       }
 
+      pet.render(ctx, this.renderCount)
+
       // render emote
+      /*
       if (pet.emote) {
         ctx.fillStyle = 'blue'
         ctx.font = '10px Arial'
@@ -345,8 +348,9 @@ export class ComfyPetsStage extends ComfyNode {
       }
 
       // move the pet
-      //pet._showHitBox(ctx)
+      pet._showHitBox(ctx)
       pet.move(ctx, this.renderCount)
+      */
     }
   }
 
