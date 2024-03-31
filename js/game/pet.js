@@ -87,10 +87,6 @@ export class Pet extends GameObject {
   }
 
   /**
-   * Returns size of pet depending on age
-   */
-
-  /**
    * Creates a list of animations from a spritesheet
    * - e.g. renderWalk, renderSniff_walk, renderIdle1
    */
