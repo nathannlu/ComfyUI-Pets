@@ -1,6 +1,6 @@
 import { ComfyNode } from '../comfy/comfy.js'
 import { gameDialog } from '../comfy/ui.js'
-import { getRandomNumber } from '../utils.js'
+import { getPetSize, getRandomNumber } from '../utils.js'
 import { Pet } from './pet.js'
 import { Food } from './food.js'
 import { container } from './shop/index.js'
@@ -136,14 +136,14 @@ export class ComfyPetsStage extends ComfyNode {
 
   addPet() {
     const height = this.size[1]
-    const petWidth = 75
-    const petHeight = 60
+    const spawnAge = 0
+    const petSize = getPetSize(spawnAge)
 
     const pet = new Pet({
       x: 0,
-      y: height - petHeight,
-      width: petWidth,
-      height: petHeight,
+      y: height - petSize.height,
+      width: petSize.width,
+      height: petSize.height,
     })
 
     this.pets.push(pet)
