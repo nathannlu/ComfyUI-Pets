@@ -40,3 +40,14 @@ export function generateId() {
 
   return gameId
 }
+
+export function getPetSize(age) {
+  switch (age) {
+    case 0:
+      return { width: 45, height: 35 }
+    case 1:
+      return { width: 65, height: 50 }
+    case 2:
+      return { width: 75, height: 60 }
+  }
+}
