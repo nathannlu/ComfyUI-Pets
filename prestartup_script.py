@@ -1,4 +1,5 @@
 import subprocess
+import folder_paths
 import os
 
 def is_git_up_to_date():
@@ -36,3 +37,4 @@ else:
     print("Comfy Pets is not up to date. Pulling latest changes...")
     pull_latest()
 
+os.chdir(folder_paths.base_path)
