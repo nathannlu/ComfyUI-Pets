@@ -74,13 +74,18 @@ async def comfy_pets_pets_age(request):
         print("Error:", e)
         return web.json_response({ "error": str(e) }, status=400)
 
-@server.PromptServer.instance.routes.post("/comfy-pets/pets/food-consumed")
-async def comfy_pets_pets_age(request):
+@server.PromptServer.instance.routes.post("/comfy-pets/pets/hunger-level")
+async def comfy_pets_pets_ge(request):
     try:
+        print("hi")
         data = await request.json()
         amount = data.get("amount")
 
+        print("dsa")
+
         persistence.update_pet_food_consumed(amount)
+
+        print("dasdasdsa")
 
         return web.json_response({
             "message": "Pet consumed updated successfully"

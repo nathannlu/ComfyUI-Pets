@@ -157,6 +157,7 @@ export class ComfyPetsStage extends ComfyNode {
       width: 25,
       height: 20,
       maxPoints: 3,
+      initialPoints: 0,
       label: 'Exp',
       colour: '#aa00ee',
       associatedId: pet.id,

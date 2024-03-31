@@ -74,9 +74,9 @@ export const setUserNewInventory = async (inventory) => {
   }
 }
 
-export const setPetFoodConsumed = async (amount) => {
+export const setHungerLevel = async (amount) => {
   try {
-    const url = '/comfy-pets/pets/food-consumed'
+    const url = '/comfy-pets/pets/hunger_level'
     const data = {
       amount,
     }

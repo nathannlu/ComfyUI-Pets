@@ -57,7 +57,7 @@ def update_pet_age(age):
         db[b'age'] = str(age).encode('utf-8')
 def update_pet_food_consumed(amount):
     with dbm.open(p_path, 'w') as db:
-        db[b'food_consumed'] = str(amount).encode('utf-8')
+        db[b'hunger_level'] = str(amount).encode('utf-8')
 
 def get_current_pet():
     pet = {}
@@ -67,7 +67,7 @@ def get_current_pet():
         # Check if user exists
         if b'age' not in db:
             db[b'age'] = str(0).encode('utf-8')
-            db[b'food_consumed'] = str(0).encode('utf-8')
+            db[b'hunger_level'] = str(0).encode('utf-8')
 
         # return data
         for key in db.keys():

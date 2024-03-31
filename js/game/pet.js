@@ -1,6 +1,6 @@
 //import { GIF } from "../libs/gif.js";
 import { GameObject } from './core.js'
-import { getCurrentPet, setPetAge } from '../apiClient.js'
+import { getCurrentPet, setPetAge, setHungerLevel } from '../apiClient.js'
 
 const BABY_CORGI =
   'https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/babycorgi-sprite-128x128.png'
@@ -64,7 +64,7 @@ export class Pet extends GameObject {
     this.talk = false
     this.talkText = ''
 
-    this.hungerPoints = 10
+    this.hungerPoints = 0
     this.lastHungerDepletionTime = Date.now() // ms; sets the last time the pet's hunger dropped 1 point
     this.hungerDepletionRate = 43200000 // ms; how often the pet's hunger drops 1 point. This is 1/10 of 5 days
 
@@ -129,9 +129,11 @@ export class Pet extends GameObject {
   }
 
   grow() {
-    if (this.age < 2) {
+    if (this.hungerPoints == 3 && this.age < 2) {
       this.age++
       setPetAge(this.age)
+      setHungerLevel(0)
+      this.hungerPoints = 0
     }
   }
 
@@ -214,6 +216,15 @@ export class Pet extends GameObject {
     return null
   }
 
+  getFed() {
+    let hunger = this.hungerPoints + 1
+    if (hunger > 3) {
+      hunger = 3
+    }
+    setHungerLevel(hunger)
+    this.hungerPoints = hunger
+  }
+
   move(ctx, renderCount) {
     switch (this.currentDirection) {
       case 'right':
@@ -277,6 +288,7 @@ export class Pet extends GameObject {
 
       // see if objects interact
       if (this.isTouching(nearestFood)) {
+        this.getFed()
         this.grow()
 
         // Eat food
