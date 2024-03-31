@@ -90,7 +90,7 @@ export class Pet extends GameObject {
 
   async _initializePet() {
     const petData = await getCurrentPet()
-
+    console.log(petData)
     for (const key in petData) {
       this[key] = petData[key]
     }
@@ -129,8 +129,10 @@ export class Pet extends GameObject {
   }
 
   grow() {
-    this.age++
-    setPetAge(this.age)
+    if (this.age < 2) {
+      this.age++
+      setPetAge(this.age)
+    }
   }
 
   _chooseRandomDirection() {

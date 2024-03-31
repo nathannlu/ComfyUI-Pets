@@ -71,6 +71,7 @@ export class ComfyPetsStage extends ComfyNode {
     this.gameButtonEndlessRunner.fontWeight = 'bold'
     this.gameButtonEndlessRunner.fontFamily = 'Courier New'
     this.gameButtonEndlessRunner.width = 150
+    this.gameButtonEndlessRunner.visible = false
 
     // Flappy Game
     this.gameButtonFlappyGame = this.addButton('Play Flappy Dog', {}, () => {
@@ -90,6 +91,7 @@ export class ComfyPetsStage extends ComfyNode {
     this.gameButtonFlappyGame.fontWeight = 'bold'
     this.gameButtonFlappyGame.fontFamily = 'Courier New'
     this.gameButtonFlappyGame.width = 150
+    this.gameButtonFlappyGame.visible = false
 
     // Shop
     this.shopButton = this.addButton('Shop', {}, () => {
@@ -103,6 +105,7 @@ export class ComfyPetsStage extends ComfyNode {
     this.shopButton.fontSize = 14
     this.shopButton.fontWeight = 'bold'
     this.shopButton.fontFamily = 'Courier New'
+    this.shopButton.visible = false
 
     this.size = [400, 200]
 
@@ -148,17 +151,17 @@ export class ComfyPetsStage extends ComfyNode {
 
     this.pets.push(pet)
 
-    this.hungerPointsBar = this.addPointBar({
+    this.feedLevelBar = this.addPointBar({
       x: this.feedButton.x + this.feedButton.width / 4,
       y: this.feedButton.y + this.feedButton.height + this.gutter,
-      width: 50,
-      height: 75,
-      maxPoints: 10,
-      label: 'Hunger',
+      width: 25,
+      height: 20,
+      maxPoints: 3,
+      label: 'Exp',
       colour: '#aa00ee',
       associatedId: pet.id,
     })
-    this.guiElements.push(this.hungerPointsBar)
+    this.guiElements.push(this.feedLevelBar)
   }
 
   addFood() {
@@ -306,6 +309,14 @@ export class ComfyPetsStage extends ComfyNode {
 
     for (let i = 0; i < this.pets.length; i++) {
       const pet = this.pets[i]
+
+      // Turn on buttons
+      if (pet.age > 0) {
+        // Show the game buttons
+        this.gameButtonEndlessRunner.visible = true
+        this.gameButtonFlappyGame.visible = true
+        this.shopButton.visible = true
+      }
 
       // Delete inactive frames
       if (!pet.isActive) {

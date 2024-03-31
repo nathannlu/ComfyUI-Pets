@@ -7,9 +7,14 @@ import { darkenHexColor } from '../utils.js'
 export class BaseComfyPetsButton extends Button {
   constructor(text, fillColor, textColor) {
     super(text, fillColor, textColor)
+
+    this.visible = true
   }
 
   render(ctx) {
+    if (!this.visible) {
+      return
+    }
     // Darken by 10%
     const buttonFillDark = darkenHexColor(this.backgroundColor, 10)
 
