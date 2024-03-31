@@ -46,3 +46,47 @@ async def comfy_pets_update_inventory(request):
         print("Error:", e)
         return web.json_response({ "error": str(e) }, status=400)
 
+
+@server.PromptServer.instance.routes.get("/comfy-pets/pets")
+async def comfy_pets_get_pet(request):
+    try:
+        data = persistence.get_current_pet()
+        return web.json_response({
+            "pet": data
+        }, content_type='application/json')
+    except Exception as e:
+        print("Error:", e)
+        return web.json_response({ "error": e }, status=400)
+
+@server.PromptServer.instance.routes.post("/comfy-pets/pets/age")
+async def comfy_pets_pets_age(request):
+    try:
+        data = await request.json()
+        age = data.get("age")
+
+        persistence.update_pet_age(age)
+
+        return web.json_response({
+            "message": "Pet age updated successfully"
+        }, content_type='application/json')
+
+    except Exception as e:
+        print("Error:", e)
+        return web.json_response({ "error": str(e) }, status=400)
+
+@server.PromptServer.instance.routes.post("/comfy-pets/pets/food-consumed")
+async def comfy_pets_pets_age(request):
+    try:
+        data = await request.json()
+        amount = data.get("amount")
+
+        persistence.update_pet_food_consumed(amount)
+
+        return web.json_response({
+            "message": "Pet consumed updated successfully"
+        }, content_type='application/json')
+
+    except Exception as e:
+        print("Error:", e)
+        return web.json_response({ "error": str(e) }, status=400)
+

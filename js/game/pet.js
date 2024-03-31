@@ -1,5 +1,13 @@
 //import { GIF } from "../libs/gif.js";
 import { GameObject } from './core.js'
+import { getCurrentPet, setPetAge } from '../apiClient.js'
+
+const BABY_CORGI =
+  'https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/babycorgi-sprite-128x128.png'
+const TEEN_CORGI =
+  'https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/teencorgi-sprite-128x128.png'
+const ADULT_CORGI =
+  'https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/corgi-sprite-128x128.png'
 
 // Our sprite sheet is on a grid of 64pxs
 // Each row is 64px tall, and each frame is 64px wide
@@ -47,9 +55,10 @@ export class Pet extends GameObject {
     super(x, y, height, width)
     // Pet state
     this.x = x
+    this.currentDirection = 'right'
+
     this.height = height
     this.width = width
-    this.currentDirection = 'right'
 
     this.emote = false
     this.talk = false
@@ -69,16 +78,29 @@ export class Pet extends GameObject {
     // Assets
     this.petImage = new Image()
     this.petImage.src =
-      'https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/corgi-sprite-128x128.png'
+      'https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/babycorgi-sprite-128x128.png'
 
     this.textBubble = new Image()
     this.textBubble.src =
       'https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/text-bubble.png'
 
-    /**
-     * Creates render sprite functions
-     * - e.g. renderWalk, renderSniff_walk, renderIdle1
-     */
+    this.age = 0
+    this._initializePet()
+  }
+
+  async _initializePet() {
+    const petData = await getCurrentPet()
+    console.log(petData)
+    for (const key in petData) {
+      this[key] = petData[key]
+    }
+  }
+
+  /**
+   * Creates a list of animations from a spritesheet
+   * - e.g. renderWalk, renderSniff_walk, renderIdle1
+   */
+  createSpriteAnimations(image, scaleDownBy) {
     Object.keys(SPRITE_SHEET).forEach((animName) => {
       // transform name to title case
       // FUNC1 -> Func1
@@ -89,15 +111,28 @@ export class Pet extends GameObject {
       const spriteFrames = SPRITE_SHEET[animName].frames
       const spriteFramesY = SPRITE_SHEET[animName].row
       this[funcName] = (ctx, renderCount, slowFpsBy = 10) => {
-        this.renderSprite(
+        this.renderSpriteAnimation(
           ctx,
-          renderCount,
-          spriteFrames - 1,
-          spriteFramesY,
-          slowFpsBy,
+          image,
+          {
+            renderCount,
+            spriteFrames: spriteFrames - 1,
+            spriteFramesY,
+            slowFpsBy,
+          },
+          {
+            scaleDownBy,
+          },
         )
       }
     })
+  }
+
+  grow() {
+    if (this.age < 2) {
+      this.age++
+      setPetAge(this.age)
+    }
   }
 
   _chooseRandomDirection() {
@@ -242,6 +277,8 @@ export class Pet extends GameObject {
 
       // see if objects interact
       if (this.isTouching(nearestFood)) {
+        this.grow()
+
         // Eat food
         nearestFood.delete()
         this.setEmote()
@@ -251,23 +288,28 @@ export class Pet extends GameObject {
     }
   }
 
-  renderSprite(
-    ctx,
-    renderCount,
-    spriteFrames,
-    spriteFramesY,
-    slowFpsBy = 10, // Slows down fps by n amount
-  ) {
+  renderSpriteAnimation(ctx, spriteSheet, frameSettings, options) {
+    const {
+      renderCount,
+      spriteFrames,
+      spriteFramesY,
+      slowFpsBy: _slowFpsBy, // Slows down fps by n amount
+    } = frameSettings
+
+    let slowFpsBy = _slowFpsBy || 10
+
+    const { scaleDownBy } = options
+
     const _spriteFramesY = SPRITE_SIZE * spriteFramesY
-    const spriteRenderSize = SPRITE_SIZE // This is the final size users see the sprite as
+    const spriteRenderSize = SPRITE_SIZE / scaleDownBy // This is the final size users see the sprite as
     ctx.imageSmoothingEnabled = true
     ctx.imageSmoothingQuality = 'high'
 
     // There is 5 frames in the sprite sheet for walking
     // so instead of doing this.renderCount % 4 (0 - 5 frames),
     // we do 0 - 50 frames and scale down for a lower image fps.
-    var _frame = renderCount % (spriteFrames * slowFpsBy)
-    var frame = Math.round(_frame / slowFpsBy)
+    const _frame = renderCount % (spriteFrames * slowFpsBy)
+    const frame = Math.round(_frame / slowFpsBy)
 
     const currentRenderFrame = SPRITE_SIZE * frame
 
@@ -279,7 +321,7 @@ export class Pet extends GameObject {
       ctx.save()
       ctx.scale(-1, 1)
       ctx.drawImage(
-        this.petImage,
+        spriteSheet,
         currentRenderFrame,
         _spriteFramesY,
         SPRITE_SIZE,
@@ -292,7 +334,7 @@ export class Pet extends GameObject {
       ctx.restore()
     } else {
       ctx.drawImage(
-        this.petImage,
+        spriteSheet,
         currentRenderFrame,
         _spriteFramesY,
         SPRITE_SIZE,
@@ -351,5 +393,45 @@ export class Pet extends GameObject {
 
       ctx.fillText(this.talkText, textX, textY)
     }
+  }
+
+  render(ctx, renderCount) {
+    switch (this.age) {
+      case 0:
+        this.petImage.src = BABY_CORGI
+        this.scaleDownBy = 1.5
+
+        break
+      case 1:
+        this.petImage.src = TEEN_CORGI
+        this.scaleDownBy = 1.2
+
+        break
+      case 2:
+        this.petImage.src = ADULT_CORGI
+        this.scaleDownBy = 1
+
+        break
+    }
+
+    //height = this.height / this.scaleDownBy
+    //width = this.width / this.scaleDownBy
+    this.createSpriteAnimations(this.petImage, this.scaleDownBy)
+
+    // render emote
+    if (this.emote) {
+      ctx.fillStyle = 'blue'
+      ctx.font = '10px Arial'
+      ctx.fillText('❤️', this.x + this.width, this.y)
+    }
+
+    // render emote
+    if (this.talk) {
+      this.renderTextBubble(ctx)
+    }
+
+    // move the pet
+    this._showHitBox(ctx)
+    this.move(ctx, renderCount)
   }
 }

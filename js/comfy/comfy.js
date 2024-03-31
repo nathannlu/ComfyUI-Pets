@@ -172,6 +172,7 @@ export class Button {
     this.fontSize = '16'
     this.fontFamily = 'Arial'
     this.fontWeight = 'regular'
+    this.visible = false
   }
 
   inBounds(mouseX, mouseY) {
