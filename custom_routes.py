@@ -74,3 +74,19 @@ async def comfy_pets_pets_age(request):
         print("Error:", e)
         return web.json_response({ "error": str(e) }, status=400)
 
+@server.PromptServer.instance.routes.post("/comfy-pets/pets/food-consumed")
+async def comfy_pets_pets_age(request):
+    try:
+        data = await request.json()
+        amount = data.get("amount")
+
+        persistence.update_pet_food_consumed(amount)
+
+        return web.json_response({
+            "message": "Pet consumed updated successfully"
+        }, content_type='application/json')
+
+    except Exception as e:
+        print("Error:", e)
+        return web.json_response({ "error": str(e) }, status=400)
+

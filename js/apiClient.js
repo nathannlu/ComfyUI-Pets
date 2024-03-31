@@ -74,6 +74,25 @@ export const setUserNewInventory = async (inventory) => {
   }
 }
 
+export const setPetFoodConsumed = async (amount) => {
+  try {
+    const url = '/comfy-pets/pets/food-consumed'
+    const data = {
+      amount,
+    }
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data), // Convert the data to JSON format
+    }
+    await fetch(url, requestOptions).then((x) => x.json())
+  } catch (e) {
+    throw new Error('Something went wrong')
+  }
+}
+
 export const setPetAge = async (age) => {
   try {
     const url = '/comfy-pets/pets/age'
