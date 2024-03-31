@@ -6,6 +6,7 @@ from datetime import datetime
 current_dir = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(current_dir, ".dat")
 u_path = os.path.join(data_path, "u")
+p_path = os.path.join(data_path, "p")
 
 def set_user_id():
     if not os.path.exists(data_path):
@@ -50,3 +51,23 @@ def update_balance(balance):
 def update_inventory(inventory):
     with dbm.open(u_path, 'w') as db:
         db[b'inventory'] = str(inventory).encode('utf-8')
+
+def update_pet_age(age):
+    with dbm.open(p_path, 'w') as db:
+        db[b'age'] = str(age).encode('utf-8')
+
+def get_current_pet():
+    pet = {}
+    if not os.path.exists(data_path):
+        os.makedirs(data_path)
+    with dbm.open(p_path, 'c') as db:
+        # Check if user exists
+        if b'age' not in db:
+            db[b'age'] = str(0).encode('utf-8')
+
+        # return data
+        for key in db.keys():
+            pet[key.decode('utf-8')] = db[key].decode('utf-8')
+
+    return pet
+

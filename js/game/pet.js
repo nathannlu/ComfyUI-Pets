@@ -1,5 +1,6 @@
 //import { GIF } from "../libs/gif.js";
 import { GameObject } from './core.js'
+import { getCurrentPet, setPetAge } from '../apiClient.js'
 
 const BABY_CORGI =
   'https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/babycorgi-sprite-128x128.png'
@@ -84,6 +85,15 @@ export class Pet extends GameObject {
       'https://comfyui-output.nyc3.cdn.digitaloceanspaces.com/text-bubble.png'
 
     this.age = 0
+    this._initializePet()
+  }
+
+  async _initializePet() {
+    const petData = await getCurrentPet()
+
+    for (const key in petData) {
+      this[key] = petData[key]
+    }
   }
 
   /**
@@ -116,6 +126,11 @@ export class Pet extends GameObject {
         )
       }
     })
+  }
+
+  grow() {
+    this.age++
+    setPetAge(this.age)
   }
 
   _chooseRandomDirection() {
@@ -260,7 +275,7 @@ export class Pet extends GameObject {
 
       // see if objects interact
       if (this.isTouching(nearestFood)) {
-        this.age++
+        this.grow()
 
         // Eat food
         nearestFood.delete()
